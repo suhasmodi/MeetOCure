@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/generateToken");  
 
 const SignupUser = async (req, res) => {
   try {
@@ -19,7 +20,8 @@ const SignupUser = async (req, res) => {
       role,
     });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = generateToken(user._id, user.role);
+
 
     res.status(201).json({
       _id: user._id,
@@ -67,15 +69,49 @@ const SignupUser = async (req, res) => {
         }
     };
 
-    
-    const generateToken = (id, role) => 
-    {
-        return jwt.sign({ id, role }, process.env.JWT_SECRET, {
-            expiresIn: "7d",
-    });
-};
+    const completeProfile = async (req, res) => 
+      {
+        try 
+        {
+          const user = await User.findById(req.user.id);
+
+          if (!user) return res.status(404).json({ message: "User not found" });
+
+          const {
+            specialization,
+            experience,
+            phone,
+            age,
+            gender,
+            address,
+          } = req.body;
+
+          if (user.role === 'doctor') 
+          {
+            user.specialization = specialization;
+            user.experience = experience;
+          }
+
+          user.phone = phone;
+          user.age = age;
+          user.gender = gender;
+          user.address = address;
+          user.isProfileComplete = true;
+
+          await user.save();
+
+          res.json({ message: "Profile updated successfully", user });
+
+        } 
+        catch (err) 
+        {
+          res.status(500).json({ message: err.message });
+        }
+    };
+
 
     module.exports = {
     SignupUser,
     loginUser,
+    completeProfile
 };

@@ -27,6 +27,32 @@ const userSchema = new mongoose.Schema
             type:String,
             enum: ["doctor", "patient"],
             required: true
+        },
+
+        //fields for profile section
+        specialization:
+        {
+            type: String,
+            default: "",
+            //required: function() { return this.role === "doctor"; },
+        },
+
+        experience:
+        {
+            type: Number,
+            default: 0,
+            //required: function() { return this.role === "doctor"; },
+        },
+
+        phone: String,
+        age: Number,
+        gender: String,
+        address: String,
+        
+        isProfileComplete: 
+        {
+            type: Boolean,
+            default: false,
         }
     },
     { timestamps: true }
