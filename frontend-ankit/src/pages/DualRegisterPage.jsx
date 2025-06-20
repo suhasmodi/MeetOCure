@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.png";
 import {
   FaUser,
   FaCalendarAlt,
@@ -119,7 +118,7 @@ const DualRegisterPage = () => {
             </div>
             <div className="relative bg-white rounded-full p-6 shadow-2xl w-36 h-36 mx-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
               <img
-                src="src/assets/logo.png"
+                src="/assets/logo.png"
                 alt="Logo"
                 className={`w-32 h-32 object-contain drop-shadow-xl ${
                   role === "doctor" ? "glow-logo-cyan" : "glow-logo-pink"

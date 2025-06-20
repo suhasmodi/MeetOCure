@@ -10,25 +10,25 @@ const DoctorDashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex">
-      {/* Sidebar for desktop */}
+    <div className="flex bg-[#F8FAFC] font-[Poppins]">
+      {/* Sidebar */}
       <SidebarNav />
 
-      {/* Main dashboard content */}
-      <div className="flex-1 min-h-screen bg-[#F8FAFC] text-[#1F2A37] font-[Poppins] px-6 py-6 pb-20 md:pb-6">
+      {/* Main Content */}
+      <div className="flex-1 min-h-screen px-6 py-6 md:pb-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
             <img
-              src="src/assets/logo.png"
-              alt="logo"
-              className="w-10 h-10 rounded-full"
+              src="/assets/logo.png"
+              alt="Meetocure"
+              className="w-14 h-14 rounded-full object-cover shadow-md"
             />
-            <h1 className="text-2xl font-semibold">Meetocure</h1>
+            <h1 className="text-3xl font-bold text-[#0A4D68]">Meetocure</h1>
           </div>
           <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-            <FaCommentDots className="cursor-pointer" />
-            <FaBell className="cursor-pointer" />
+            <FaCommentDots className="cursor-pointer hover:text-[#08374f]" />
+            <FaBell className="cursor-pointer hover:text-[#08374f]" />
           </div>
         </div>
 
@@ -37,69 +37,63 @@ const DoctorDashboard = () => {
           <HeroCarousel />
         </div>
 
-        {/* Appointments Header */}
+        {/* Today Appointments */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Today Appointments</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-[#1F2A37]">
+            Today Appointments
+          </h2>
           <span
-            className="text-[#0A4D68] cursor-pointer font-medium hover:underline"
             onClick={() => navigate("/doctor/appointments")}
+            className="text-sm md:text-base text-[#0A4D68] cursor-pointer hover:underline font-medium"
+          >
+            See All
+          </span>
+        </div>
+        <TodayAppointments />
+
+        {/* Quick Stats */}
+        <div className="flex justify-between items-center mt-12 mb-4">
+          <h2 className="text-lg md:text-xl font-semibold text-[#1F2A37]">
+            Quick Stats
+          </h2>
+          <span
+            onClick={() => navigate("/doctor/stats")}
+            className="text-sm md:text-base text-[#0A4D68] cursor-pointer hover:underline font-medium"
           >
             See All
           </span>
         </div>
 
-        {/* Appointments Grid */}
-        <TodayAppointments />
-
-        {/* Quick Stats Heading */}
-        <div className="flex justify-between items-center mt-12 mb-4">
-          <h2 className="text-xl font-semibold">Quick Stats</h2>
-          <span className="text-[#0A4D68] cursor-pointer font-medium">See All</span>
+        {/* Stats Cards Row 1 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <StatCard title="Appointments" value="30" />
+          <StatCard title="Pending Appt" value="5" />
         </div>
 
-        {/* Quick Stats Row 1 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
-            <p className="text-gray-500 text-sm">Today</p>
-            <h3 className="font-semibold text-lg border-b-2 border-gray-300 pb-1 mb-3">
-              Appointments
-            </h3>
-            <p className="text-[#0A4D68] text-xl font-bold">Count : 30</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
-            <p className="text-gray-500 text-sm">Today</p>
-            <h3 className="font-semibold text-lg border-b-2 border-gray-300 pb-1 mb-3">
-              Pending Appt
-            </h3>
-            <p className="text-[#0A4D68] text-xl font-bold">Count : 5</p>
-          </div>
-        </div>
-
-        {/* Quick Stats Row 2 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 mt-6">
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
-            <p className="text-gray-500 text-sm">Today</p>
-            <h3 className="font-semibold text-lg border-b-2 border-gray-300 pb-1 mb-3">
-              Earnings
-            </h3>
-            <p className="text-[#0A4D68] text-xl font-bold">Earn : 3000</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
-            <p className="text-gray-500 text-sm">Today</p>
-            <h3 className="font-semibold text-lg border-b-2 border-gray-300 pb-1 mb-3">
-              Patients
-            </h3>
-            <p className="text-[#0A4D68] text-xl font-bold">Count : 30</p>
-          </div>
+        {/* Stats Cards Row 2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+          <StatCard title="Earnings" value="₹3000" prefix="Earned : " />
+          <StatCard title="Patients" value="30" />
         </div>
       </div>
 
-      {/* Bottom nav for mobile only */}
+      {/* Mobile Bottom Nav */}
       <div className="block md:hidden">
         <BottomNav />
       </div>
     </div>
   );
 };
+
+// Reusable stat card
+const StatCard = ({ title, value, prefix = "Count : " }) => (
+  <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 text-center border border-gray-100">
+    <p className="text-xs text-gray-400 mb-1">Today</p>
+    <h3 className="font-semibold text-lg text-[#1F2A37] border-b pb-2 mb-3">
+      {title}
+    </h3>
+    <p className="text-[#0A4D68] text-xl font-bold">{prefix}{value}</p>
+  </div>
+);
 
 export default DoctorDashboard;
