@@ -1,11 +1,11 @@
+
+
 const Appointment = require("../models/Appointment");
 const User = require("../models/User");
 
 // Patient books appointment
-const bookAppointment = async (req, res) => 
-{
-  try 
-  {
+const bookAppointment = async (req, res) => {
+  try {
     const { doctorId, date, time, reason } = req.body;
 
     const appointment = new Appointment({
@@ -14,6 +14,7 @@ const bookAppointment = async (req, res) =>
       date,
       time,
       reason,
+      status: "pending", 
     });
 
     await appointment.save();
@@ -55,8 +56,22 @@ const updateAppointmentStatus = async (req, res) => {
   }
 };
 
+// Patient views own appointments
+const getPatientAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({ patient: req.user.id })
+      .populate("doctor", "name email specialization")
+      .sort({ date: -1 });
+
+    res.status(200).json({ appointments });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   bookAppointment,
   getDoctorAppointments,
   updateAppointmentStatus,
+  getPatientAppointments,
 };
