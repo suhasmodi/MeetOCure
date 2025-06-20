@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const product = require("../middleware/authMiddleware");
-const {getDoctorProfile, updateDoctorProfile} = require("../controllers/doctorController");
+const protect = require("../middleware/authMiddleware");
+const { getDoctorProfile, updateDoctorProfile } = require("../controllers/doctorController");
 
-router.get("/profile", product(["doctor"]), getDoctorProfile);
+router.get("/profile", protect(["doctor"]), getDoctorProfile);
 
-router.put("/profile", product(["doctor"]), updateDoctorProfile);;
+router.put("/profile", protect(["doctor"]), updateDoctorProfile);
 
 module.exports = router;
