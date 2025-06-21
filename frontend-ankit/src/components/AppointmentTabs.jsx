@@ -1,6 +1,6 @@
 import React from "react";
 
-const tabs = ["Upcoming", "Completed", "Canceled"];
+const tabs = ["Upcoming", "Completed", "Cancelled"];
 
 const AppointmentTabs = ({ active, onChange }) => {
   return (

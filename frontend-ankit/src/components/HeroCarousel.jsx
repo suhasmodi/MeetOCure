@@ -5,25 +5,25 @@ const banners = [
     text: "Looking for Specialist Doctors?",
     subtext: "Schedule an appointment with our top doctors.",
     bgColor: "bg-[#5CB8B2]",
-    image: "src/assets/doctor1.png",
+    image: "/assets/doctor1.png",
   },
   {
     text: "Looking for Specialist Doctors?",
     subtext: "Schedule an appointment with our top doctors.",
     bgColor: "bg-[#F4B9C1]",
-    image: "src/assets/doctor2.png",
+    image: "/assets/doctor2.png",
   },
   {
     text: "Looking for Specialist Doctors?",
     subtext: "Schedule an appointment with our top doctors.",
     bgColor: "bg-[#F9A26C]",
-    image: "src/assets/doctor3.png",
+    image: "/assets/doctor3.png",
   },
   {
     text: "Looking for Specialist Doctors?",
     subtext: "Schedule an appointment with our top doctors.",
     bgColor: "bg-[#F4B9C1]",
-    image: "src/assets/doctor4.png",
+    image: "/assets/doctor4.png",
   },
 ];
 

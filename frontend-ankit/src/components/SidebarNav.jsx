@@ -7,27 +7,31 @@ import {
   FaUser,
   FaBars,
 } from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navItems = [
-  { icon: <FaHome />, label: "Home", path: "/doctor" },
-  { icon: <FaChartBar />, label: "Analytics", path: "/doctor/analytics" },
-  { icon: <FaCalendarAlt />, label: "Calendar", path: "/doctor/calendar" },
-  { icon: <FaRegCalendarCheck />, label: "Schedule", path: "/doctor/schedule" },
+  { icon: <FaHome />, label: "Home", path: "/doctor-dashboard" },
+  { icon: <FaChartBar />, label: "Stats", path: "/doctor/stats" },
+  { icon: <FaCalendarAlt />, label: "Availability", path: "/doctor/availability" },
+  { icon: <FaRegCalendarCheck />, label: "Schedule", path: "/doctor/appointments" },
   { icon: <FaUser />, label: "Profile", path: "/doctor/profile" },
 ];
 
 const SidebarNav = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activePath, setActivePath] = useState("/doctor"); // default page
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const activePath = location.pathname;
 
   return (
     <div
-      className={`hidden md:flex flex-col bg-white shadow-xl h-screen transition-all duration-300 ease-in-out z-50 ${
-        isOpen ? "w-52" : "w-16"
+      className={`hidden md:flex flex-col bg-white shadow-xl h-screen transition-all duration-300 ease-in-out ${
+        isOpen ? "w-36" : "w-16"
       }`}
     >
-      {/* Toggle */}
-      <div className="flex justify-center items-center py-4 border-b">
+      {/* Toggle Button */}
+      <div className="flex justify-center items-center py-4 border-b border-gray-200">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-[#0A4D68] text-2xl focus:outline-none"
@@ -38,30 +42,31 @@ const SidebarNav = () => {
       </div>
 
       {/* Nav Items */}
-      <div className="flex flex-col items-start gap-4 py-6 px-2 text-[#0A4D68]">
-        {navItems.map((item, index) => (
-          <div
-            key={index}
-            onClick={() => setActivePath(item.path)}
-            className={`group relative flex items-center gap-3 w-full p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-all ${
-              activePath === item.path ? "bg-[#0A4D68]/10 font-semibold" : ""
-            }`}
-          >
-            <div className="text-2xl">{item.icon}</div>
+      <div className="flex flex-col items-center gap-3 py-6 px-2 text-[#0A4D68]">
+        {navItems.map((item, index) => {
+          const isActive = activePath === item.path;
 
-            {/* Tooltip when collapsed */}
-            {!isOpen && (
-              <span className="absolute left-16 bg-[#0A4D68] text-white text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-50">
-                {item.label}
-              </span>
-            )}
+          return (
+            <div
+              key={index}
+              onClick={() => navigate(item.path)}
+              className={`group flex flex-col items-center justify-center gap-1 py-2 px-2 cursor-pointer transition-all duration-200 ${
+                isActive
+                  ? "text-[#0A4D68] font-semibold"
+                  : "text-gray-600 hover:text-[#0A4D68]"
+              }`}
+              title={item.label}
+            >
+              <div className="text-2xl">{item.icon}</div>
 
-            {/* Label when expanded */}
-            {isOpen && (
-              <span className="text-sm whitespace-nowrap">{item.label}</span>
-            )}
-          </div>
-        ))}
+              {isOpen && (
+                <span className="text-xs mt-1 leading-tight">
+                  {item.label}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
