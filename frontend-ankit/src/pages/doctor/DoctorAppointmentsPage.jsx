@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 import AppointmentTabs from "../../components/AppointmentTabs";
 import AppointmentCard from "../../components/AppointmentCard";
 import PatientModal from "../../components/PatientModal";
+import TopIcons from "../../components/TopIcons";
 
 const allAppointments = [
   {
@@ -59,13 +62,14 @@ const allAppointments = [
     date: "June 13, 2025",
     time: "10.00 AM",
     photo: "/assets/patient/keerthi.png",
-    status: "Canceled",
+    status: "Cancelled",
   },
 ];
 
 const DoctorAppointmentsPage = () => {
   const [selectedTab, setSelectedTab] = useState("Upcoming");
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const navigate = useNavigate();
 
   const filteredAppointments = allAppointments.filter(
     (appt) => appt.status === selectedTab
@@ -75,13 +79,16 @@ const DoctorAppointmentsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#F8FAFC] to-[#ECF3F9] px-6 py-8 md:px-12 text-[#1F2A37] font-poppins">
       {/* Header */}
       <header className="flex items-center justify-between mb-8 border-b border-[#E2E8F0] pb-4">
-        <h1 className="text-3xl font-bold tracking-tight text-[#0A4D68]">
-          Appointments
-        </h1>
-        <div className="flex gap-3 items-center">
-          <img src="/icons/message.svg" alt="Message" className="w-5 h-5" />
-          <img src="/icons/notification.svg" alt="Notifications" className="w-5 h-5" />
+        <div className="flex items-center gap-4">
+          <FaArrowLeft
+            onClick={() => navigate("/doctor-dashboard")}
+            className="text-xl text-[#0A4D68] cursor-pointer"
+          />
+          <h1 className="text-3xl font-bold tracking-tight text-[#0A4D68]">
+            Appointments
+          </h1>
         </div>
+        <TopIcons />
       </header>
 
       {/* Tabs */}
