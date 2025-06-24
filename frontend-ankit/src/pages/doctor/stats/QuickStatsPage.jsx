@@ -1,5 +1,4 @@
 import React from "react";
-import { FaBell, FaCommentDots } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import {
   AreaChart,
@@ -11,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import TopIcons from "../../../components/TopIcons";
 
 const chartData = [
   { name: "Mon", value: 30 },
@@ -47,10 +47,9 @@ const QuickStatsPage = () => {
             Stats Overview
           </h1>
         </div>
-        <div className="flex items-center gap-4 text-[#0A4D68] text-2xl">
-          <FaCommentDots className="cursor-pointer hover:text-[#08374f]" />
-          <FaBell className="cursor-pointer hover:text-[#08374f]" />
-        </div>
+
+        {/* ✅ Replaced custom icons with TopIcons component */}
+        <TopIcons />
       </div>
 
       {/* Quick Stats */}

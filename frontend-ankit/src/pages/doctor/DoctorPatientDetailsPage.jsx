@@ -10,6 +10,7 @@ import {
   FaFileAlt,
   FaEllipsisV,
 } from "react-icons/fa";
+import TopIcons from "../../components/TopIcons";
 
 const DoctorPatientDetailsPage = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const DoctorPatientDetailsPage = () => {
             Patient Details
           </h1>
         </div>
+        <TopIcons/>
       </div>
 
       {/* Profile Section */}

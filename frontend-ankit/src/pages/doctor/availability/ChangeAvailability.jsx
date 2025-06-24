@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaBell, FaCommentDots } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import BottomNav from "../../../components/BottomNav";
+import TopIcons from "../../../components/TopIcons";
 
 const timeSlots = [
   "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
@@ -45,10 +46,7 @@ const ChangeAvailability = () => {
           </button>
           <h1 className="text-3xl font-bold text-[#0A4D68] tracking-tight">Change Availability</h1>
         </div>
-        <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-          <FaCommentDots className="cursor-pointer hover:text-[#08374f]" />
-          <FaBell className="cursor-pointer hover:text-[#08374f]" />
-        </div>
+        <TopIcons />
       </div>
 
       {/* Availability Form */}

@@ -1,12 +1,8 @@
 import React from "react";
-import {
-  FaArrowLeft,
-  FaBell,
-  FaCommentDots,
-} from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import NotificationItem from "../../components/NotificationItem";
-import TopIcons from "../../components/TopIcons"; 
+import TopIcons from "../../components/TopIcons";
 
 const notifications = {
   today: [
@@ -55,16 +51,7 @@ const Notifications = () => {
             Notifications
           </h1>
         </div>
-        <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-          <FaCommentDots className="cursor-pointer hover:scale-105 transition" />
-          <div className="relative">
-            <FaBell
-              className="cursor-pointer hover:scale-105 transition"
-              onClick={() => navigate("/doctor/notifications")}
-            />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-          </div>
-        </div>
+        <TopIcons /> {/* ✅ Reusable top right icons */}
       </div>
 
       <div className="px-6 pt-6 space-y-10">

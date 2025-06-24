@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
-  FaBell,
   FaUser,
   FaPhone,
   FaCalendarAlt,
   FaVenusMars,
   FaPencilAlt,
-  FaCommentDots,
 } from "react-icons/fa";
 import profileImg from "/assets/doc_profile.png";
+import TopIcons from "../../../components/TopIcons"; // ✅ Imported
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -60,13 +59,7 @@ const EditProfile = () => {
             Edit Profile
           </h1>
         </div>
-        <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-          <FaCommentDots className="cursor-pointer" />
-          <div className="relative">
-            <FaBell className="cursor-pointer" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-          </div>
-        </div>
+        <TopIcons /> {/* ✅ Replaced manual icons with reusable component */}
       </div>
 
       {/* Profile Image */}

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
-  FaBell,
-  FaCommentDots,
   FaEdit,
   FaUserEdit,
   FaBell as FaNotify,
@@ -15,6 +13,8 @@ import {
 } from "react-icons/fa";
 import BottomNav from "../../../components/BottomNav";
 import EditProfileImageModal from "../../../components/EditProfileImageModal";
+import LogoutModal from "../../../components/LogoutModal";
+import TopIcons from "../../../components/TopIcons"; // ✅ RESTORED
 import { motion } from "framer-motion";
 
 const options = [
@@ -30,11 +30,12 @@ const options = [
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profileImage, setProfileImage] = useState("https://via.placeholder.com/150");
 
   const handleOptionClick = (path) => {
     if (path === "logout") {
-      console.log("Logging out...");
+      setShowLogoutModal(true);
     } else {
       navigate(path);
     }
@@ -49,15 +50,12 @@ const ProfilePage = () => {
             onClick={() => navigate("/doctor-dashboard")}
             className="text-[#0A4D68] text-xl cursor-pointer hover:text-[#08374f]"
           />
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1F2A37]">Profile</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-[#0A4D68]">Profile</h1>
         </div>
-        <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-          <FaCommentDots className="cursor-pointer hover:text-[#08374f]" />
-          <FaBell className="cursor-pointer hover:text-[#08374f]" />
-        </div>
+        <TopIcons /> {/* ✅ RESTORED */}
       </div>
 
-      {/* Profile Info (animated + previous layout) */}
+      {/* Profile Info */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -77,7 +75,7 @@ const ProfilePage = () => {
             <FaEdit className="text-white text-sm" />
           </div>
         </div>
-        <h2 className="text-xl font-semibold text-[#1F2A37] mb-1">
+        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">
           Nutan Sai Nandam
         </h2>
         <p className="text-[#6B7280] mb-6">+91 8639068288</p>
@@ -97,7 +95,7 @@ const ProfilePage = () => {
           >
             <div className="flex items-center gap-4 text-[#0A4D68] text-lg group-hover:scale-105 transition">
               {option.icon}
-              <span className="text-[#1F2A37] text-base md:text-lg font-medium">
+              <span className="text-[#0A4D68] text-base md:text-lg font-medium">
                 {option.label}
               </span>
             </div>
@@ -113,11 +111,22 @@ const ProfilePage = () => {
         <BottomNav />
       </div>
 
-      {/* Edit Profile Image Modal */}
+      {/* Modals */}
       {showModal && (
         <EditProfileImageModal
           onClose={() => setShowModal(false)}
           onSave={(newImg) => setProfileImage(newImg)}
+        />
+      )}
+
+      {showLogoutModal && (
+        <LogoutModal
+          onCancel={() => setShowLogoutModal(false)}
+          onConfirm={() => {
+            console.log("Logging out...");
+            setShowLogoutModal(false);
+            navigate("/");
+          }}
         />
       )}
     </div>

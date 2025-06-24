@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import TopIcons from "../../../components/TopIcons";
 
 const AddAvailability = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const AddAvailability = () => {
           </button>
           <h1 className="text-2xl font-bold text-[#0A4D68]">Availability</h1>
         </div>
+        <TopIcons/>
       </div>
 
       {/* Date Picker */}
