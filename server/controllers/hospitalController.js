@@ -49,8 +49,34 @@ const getHospitalById = async (req, res) => {
   }
 };
 
+const filterHospitals = async(req, res) =>
+{
+  try
+  {
+      const
+      {
+          city,
+          department
+      } = req.query;
+
+      const query = {};
+      if(city) query["location.city"] = new RegExp(city, "i");
+      if(department) query["departments"] = department;
+
+      const hospitals = await Hospital.find(query).populate("doctors", "name specialization");
+
+      res.status(200).json(hospitals);
+  }
+
+  catch(err)
+  {
+    res.status(500).json({messahe: err.message});
+  }
+};
+
 module.exports = {
   createHospital,
   getAllHospitals,
   getHospitalById,
+  filterHospitals
 };

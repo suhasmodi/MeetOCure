@@ -45,7 +45,44 @@ const updateDoctorProfile = async (req, res) =>
         }
 };
 
+
+const getFilteredDoctors = async (req, res) =>
+{
+    try
+    {
+        const 
+        {
+            specilaization,
+            minExperience,
+        } = req.query;
+
+        const query = {
+            role: "doctor",
+            isProfileComplete: true,
+        };
+
+        if(specilaization)
+        {
+            query.specialization = { $regex: specilaization, $options: "i" };
+        }
+
+        if(minExperience)
+        {
+            query.experince = { $gte: parseInt(minExperience) };
+        }
+
+        const doctors = await User.find(query).select("-password");
+        res.status(200).json(doctors);
+    }
+
+    catch(err)
+    {
+        res.status(500).json({ message: err.message});
+    }
+};
+
 module.exports = {
   getDoctorProfile,
   updateDoctorProfile,
+  getFilteredDoctors,
 };

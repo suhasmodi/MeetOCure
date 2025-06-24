@@ -10,7 +10,13 @@ const hospitalSchema = new mongoose.Schema(
 
     location:
     {
-        type: String,
+        city: {type: String},
+        state:{type: String},
+        coordinates: 
+        {
+            lat: {type: Number},
+            lng: {type: Number},
+        },
     },
 
     distance:
@@ -29,6 +35,8 @@ const hospitalSchema = new mongoose.Schema(
         enum: ['Hospital', "Clinic", "Specialized Care"],
         required: true,
     },
+
+    departments: [String],
 
     rating:
     {

@@ -5,6 +5,7 @@ const {
   createHospital,
   getAllHospitals,
   getHospitalById,
+  filterHospitals,
 } = require("../controllers/hospitalController");
 
 // Doctor adds hospital
@@ -15,5 +16,7 @@ router.get("/", getAllHospitals);
 
 // Specific hospital + doctor info
 router.get("/:id", getHospitalById);
+
+router.get("/filter", filterHospitals);
 
 module.exports = router;
