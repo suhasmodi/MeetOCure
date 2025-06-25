@@ -1,7 +1,8 @@
 import React from "react";
-import { FaArrowLeft, FaCalendarAlt, FaClock, FaBell, FaCommentDots, FaPlus } from "react-icons/fa";
+import { FaArrowLeft, FaCalendarAlt, FaClock, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "../../../components/BottomNav";
+import TopIcons from "../../../components/TopIcons";
 
 const DoctorAvailability = () => {
   const navigate = useNavigate();
@@ -19,10 +20,7 @@ const DoctorAvailability = () => {
           </button>
           <h1 className="text-3xl font-bold text-[#0A4D68] tracking-tight">Availability</h1>
         </div>
-        <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-          <FaCommentDots className="cursor-pointer hover:text-[#08374f]" />
-          <FaBell className="cursor-pointer hover:text-[#08374f]" />
-        </div>
+        <TopIcons />
       </div>
 
       {/* TODAY & TOMORROW cards vertically stacked */}

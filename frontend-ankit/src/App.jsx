@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import SplashScreen from "./pages/SplashScreen";
 import DualLoginPage from "./pages/DualLoginPage";
 import DualRegisterPage from "./pages/DualRegisterPage";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
@@ -11,17 +12,16 @@ import ChangeAvailability from "./pages/doctor/availability/ChangeAvailability";
 import AddAvailability from "./pages/doctor/availability/AddAvailability";
 import ProfilePage from "./pages/doctor/profile/ProfilePage";
 import EditProfile from "./pages/doctor/profile/EditProfile";
-import Notifications from "./pages/doctor/Notifications"; 
+import Notifications from "./pages/doctor/Notifications";
 import ChatAI from "./pages/doctor/ChatAI";
 import Settings from "./pages/doctor/profile/Settings";
 import HelpSupport from "./pages/doctor/profile/HelpSupport";
 import TermsConditions from "./pages/doctor/profile/TermsConditions";
 
-
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<SplashScreen />} />
       <Route path="/login" element={<DualLoginPage />} />
       <Route path="/register" element={<DualRegisterPage />} />
       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />

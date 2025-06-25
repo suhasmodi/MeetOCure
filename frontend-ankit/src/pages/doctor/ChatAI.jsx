@@ -84,7 +84,7 @@ const ChatAI = () => {
       <div className="sticky top-0 z-10 bg-white border-b px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <FaArrowLeft
-            onClick={() => navigate("/doctor-dashboard")}
+            onClick={() => navigate("/doctor/profile")}
             className="text-xl text-[#0A4D68] cursor-pointer"
           />
           <h2 className="text-xl md:text-2xl font-semibold text-[#0A4D68]">

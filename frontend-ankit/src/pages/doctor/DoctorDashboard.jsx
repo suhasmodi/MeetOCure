@@ -1,10 +1,10 @@
 import React from "react";
-import { FaBell, FaCommentDots } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import HeroCarousel from "../../components/HeroCarousel";
+import HeroCarousel from "../../components/HeroBanners";
 import TodayAppointments from "../../components/TodayAppointments";
 import SidebarNav from "../../components/SidebarNav";
 import BottomNav from "../../components/BottomNav";
+import TopIcons from "../../components/TopIcons"; 
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
@@ -26,10 +26,7 @@ const DoctorDashboard = () => {
             />
             <h1 className="text-3xl font-bold text-[#0A4D68]">Meetocure</h1>
           </div>
-          <div className="flex items-center gap-4 text-[#0A4D68] text-xl">
-            <FaCommentDots className="cursor-pointer hover:text-[#08374f]" />
-            <FaBell className="cursor-pointer hover:text-[#08374f]" />
-          </div>
+          <TopIcons />
         </div>
 
         {/* Hero Banner */}
@@ -92,7 +89,10 @@ const StatCard = ({ title, value, prefix = "Count : " }) => (
     <h3 className="font-semibold text-lg text-[#1F2A37] border-b pb-2 mb-3">
       {title}
     </h3>
-    <p className="text-[#0A4D68] text-xl font-bold">{prefix}{value}</p>
+    <p className="text-[#0A4D68] text-xl font-bold">
+      {prefix}
+      {value}
+    </p>
   </div>
 );
 
