@@ -74,9 +74,32 @@ const filterHospitals = async(req, res) =>
   }
 };
 
+const getNearbyHospitals = async (req, res) => {
+  try {
+    const { lat, lng, maxDistance = 5000 } = req.query;
+
+    if (!lat || !lng)
+      return res.status(400).json({ message: "lat & lng required" });
+
+    const hospitals = await Hospital.find({
+      location: {
+        $near: {
+          $geometry: { type: "Point", coordinates: [parseFloat(lng), parseFloat(lat)] },
+          $maxDistance: parseInt(maxDistance), // meters
+        }
+      }
+    });
+
+    res.status(200).json(hospitals);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   createHospital,
   getAllHospitals,
   getHospitalById,
-  filterHospitals
+  filterHospitals,
+  getNearbyHospitals,
 };

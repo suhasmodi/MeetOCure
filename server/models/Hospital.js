@@ -8,15 +8,16 @@ const hospitalSchema = new mongoose.Schema(
         required: true,
     },
 
-    location:
-    {
-        city: {type: String},
-        state:{type: String},
-        coordinates: 
-        {
-            lat: {type: Number},
-            lng: {type: Number},
-        },
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number], 
+        required: true,
+      }
     },
 
     distance:
@@ -60,5 +61,7 @@ const hospitalSchema = new mongoose.Schema(
 },
 {timestamps: true}
 );
+
+hospitalSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Hospital", hospitalSchema);
