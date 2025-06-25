@@ -43,6 +43,7 @@ const SignupUser = async (req, res) => {
         try 
         {
             const { email, password } = req.body;
+            
 
             // Check for user
             const user = await User.findOne({ email });
