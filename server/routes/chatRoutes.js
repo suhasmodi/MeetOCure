@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { chatWithAI } = require("../controllers/chatController");
+const { chatWithOpenAI } = require("../controllers/chatCOntroller");
 const protect = require("../middleware/authMiddleware");
 
-// AI Chat (doctor or patient)
-router.post("/", protect(["doctor", "patient"]), chatWithAI);
+router.post("/", protect(["doctor", "patient"]), chatWithOpenAI);
 
 module.exports = router;
