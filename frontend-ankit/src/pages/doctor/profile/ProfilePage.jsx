@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
@@ -12,9 +12,8 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import BottomNav from "../../../components/BottomNav";
-import EditProfileImageModal from "../../../components/EditProfileImageModal";
-import LogoutModal from "../../../components/LogoutModal";
-import TopIcons from "../../../components/TopIcons"; // ✅ RESTORED
+import TopIcons from "../../../components/TopIcons";
+import profileImg from "/assets/doc_profile.png";
 import { motion } from "framer-motion";
 
 const options = [
@@ -29,9 +28,25 @@ const options = [
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://via.placeholder.com/150");
+
+  const defaultImage = profileImg;
+  const [profileImage, setProfileImage] = useState(() =>
+    localStorage.getItem("doctorProfileImage") || defaultImage
+  );
+
+  // Save new image to localStorage
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+        localStorage.setItem("doctorProfileImage", reader.result); 
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleOptionClick = (path) => {
     if (path === "logout") {
@@ -52,10 +67,10 @@ const ProfilePage = () => {
           />
           <h1 className="text-2xl md:text-3xl font-bold text-[#0A4D68]">Profile</h1>
         </div>
-        <TopIcons /> {/* ✅ RESTORED */}
+        <TopIcons />
       </div>
 
-      {/* Profile Info */}
+      {/* Profile Image and Info */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -68,16 +83,17 @@ const ProfilePage = () => {
             alt="Profile"
             className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
           />
-          <div
-            onClick={() => setShowModal(true)}
-            className="absolute bottom-2 right-2 bg-[#0A4D68] p-1.5 rounded-full cursor-pointer"
-          >
+          <label className="absolute bottom-2 right-2 bg-[#0A4D68] p-1.5 rounded-full cursor-pointer">
             <FaEdit className="text-white text-sm" />
-          </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </label>
         </div>
-        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">
-          Nutan Sai Nandam
-        </h2>
+        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">Nutan Sai Nandam</h2>
         <p className="text-[#6B7280] mb-6">+91 8639068288</p>
       </motion.div>
 
@@ -110,25 +126,6 @@ const ProfilePage = () => {
       <div className="block md:hidden fixed bottom-0 left-0 right-0">
         <BottomNav />
       </div>
-
-      {/* Modals */}
-      {showModal && (
-        <EditProfileImageModal
-          onClose={() => setShowModal(false)}
-          onSave={(newImg) => setProfileImage(newImg)}
-        />
-      )}
-
-      {showLogoutModal && (
-        <LogoutModal
-          onCancel={() => setShowLogoutModal(false)}
-          onConfirm={() => {
-            console.log("Logging out...");
-            setShowLogoutModal(false);
-            navigate("/");
-          }}
-        />
-      )}
     </div>
   );
 };

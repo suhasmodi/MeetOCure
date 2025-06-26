@@ -26,7 +26,7 @@ const SidebarNav = () => {
 
   return (
     <div
-      className={`hidden md:flex flex-col bg-white shadow-xl h-screen transition-all duration-300 ease-in-out ${
+      className={`hidden md:flex flex-col bg-white shadow-xl min-h-full transition-all duration-300 ease-in-out ${
         isOpen ? "w-36" : "w-16"
       }`}
     >

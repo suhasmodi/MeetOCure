@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import AppointmentTabs from "../../components/AppointmentTabs";
 import AppointmentCard from "../../components/AppointmentCard";
-import PatientModal from "../../components/PatientModal";
 import TopIcons from "../../components/TopIcons";
 
 const allAppointments = [
@@ -109,13 +108,6 @@ const DoctorAppointmentsPage = () => {
           </p>
         )}
       </section>
-
-      {/* Patient Modal */}
-      <PatientModal
-        isOpen={!!selectedPatient}
-        patient={selectedPatient}
-        onClose={() => setSelectedPatient(null)}
-      />
     </div>
   );
 };
