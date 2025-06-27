@@ -5,39 +5,44 @@ const searchAll = async (req, res) => {
   try {
     const { keyword, category, location, minExperience } = req.query;
 
-    const query = {};
+    // Construct Doctor Query
+    const doctorQuery = { role: "doctor" };
 
-    // Doctor Search Logic
-    const doctorQuery = {
-      role: "doctor",
-      ...(keyword && {
-        $or: [
-          { name: { $regex: keyword, $options: "i" } },
-          { specialization: { $regex: keyword, $options: "i" } },
-        ],
-      }),
-      ...(minExperience && { experience: { $gte: parseInt(minExperience) } }),
-    };
+    if (keyword) {
+      doctorQuery.$or = [
+        { name: { $regex: keyword, $options: "i" } },
+        { specialization: { $regex: keyword, $options: "i" } },
+      ];
+    }
 
-    // Hospital/Clinic Search Logic
-    const hospitalQuery = {
-      ...(keyword && {
-        name: { $regex: keyword, $options: "i" },
-      }),
-      ...(category && { category }), // Hospital / Clinic / Special Care
-    };
+    if (minExperience && !isNaN(minExperience)) {
+      doctorQuery.experience = { $gte: parseInt(minExperience) };
+    }
 
-    // TODO: Add location filtering using coordinates or city (if present in schema)
+    // Construct Hospital Query
+    const hospitalQuery = {};
 
-    const doctors = await User.find(doctorQuery).select("-password");
-    const hospitals = await Hospital.find(hospitalQuery);
+    if (keyword) {
+      hospitalQuery.name = { $regex: keyword, $options: "i" };
+    }
 
-    res.json({
-      doctors,
-      hospitals,
-    });
+    if (category) {
+      hospitalQuery.category = category;
+    }
+
+    if (location) {
+      hospitalQuery["location.city"] = { $regex: location, $options: "i" };
+    }
+
+    // Execute both queries in parallel
+    const [doctors, hospitals] = await Promise.all([
+      User.find(doctorQuery).select("-password"),
+      Hospital.find(hospitalQuery),
+    ]);
+
+    res.status(200).json({ doctors, hospitals });
   } catch (err) {
-    console.error(err);
+    console.error("Search error:", err);
     res.status(500).json({ message: "Search failed" });
   }
 };

@@ -10,16 +10,16 @@ const {
   getPatientAppointments,
 } = require("../controllers/appointmentController");
 
-// ✅ Patient books appointment
+// Patient books appointment
 router.post("/", protect(["patient"]), bookAppointment);
 
-// ✅ Patient views their own appointments (optional but useful)
+//Patient views their own appointments 
 router.get("/my", protect(["patient"]), getPatientAppointments);
 
-// ✅ Doctor views all their appointments
+//Doctor views all their appointments
 router.get("/doctor", protect(["doctor"]), getDoctorAppointments);
 
-// ✅ Doctor updates appointment status (accept, reject, complete, cancel)
+//Doctor updates appointment status 
 router.put("/:id/status", protect(["doctor"]), updateAppointmentStatus);
 
 module.exports = router;

@@ -19,6 +19,7 @@ app.use("/api/hospitals", require("./routes/hospitalRoutes"));
 app.use("/api/availability", require("./routes/availabilityRoutes"));
 app.use("/api/chat", require("./routes/chatRoutes"));
 app.use("/api/search", require("./routes/searchRoutes"));
+app.use("/api/doc&hosp", require("./routes/doc&hospRoutes"));
 
 
 
