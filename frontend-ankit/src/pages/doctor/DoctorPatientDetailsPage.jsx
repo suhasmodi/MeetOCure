@@ -37,7 +37,7 @@ const DoctorPatientDetailsPage = () => {
             Patient Details
           </h1>
         </div>
-        <TopIcons/>
+        <TopIcons />
       </div>
 
       {/* Profile Section */}
@@ -48,11 +48,22 @@ const DoctorPatientDetailsPage = () => {
           className="w-28 h-28 rounded-xl object-cover border shadow"
         />
         <div className="flex-1">
-          <p className="text-2xl font-semibold text-[#0A4D68] mb-1">{patient.name}</p>
+          <p className="text-2xl font-semibold text-[#0A4D68] mb-1">
+            {patient.name}
+          </p>
           <div className="text-base text-gray-600 space-y-1">
-            <p><FaUser className="inline mr-2 text-[#0A4D68]" /> Age: {patient.age}</p>
-            <p><FaVenusMars className="inline mr-2 text-[#0A4D68]" /> Gender: {patient.gender}</p>
-            <p><FaPhone className="inline mr-2 text-[#0A4D68]" /> Phone: {patient.phone || "+91 XXXXXXX"}</p>
+            <p>
+              <FaUser className="inline mr-2 text-[#0A4D68]" /> Age:{" "}
+              {patient.age}
+            </p>
+            <p>
+              <FaVenusMars className="inline mr-2 text-[#0A4D68]" /> Gender:{" "}
+              {patient.gender}
+            </p>
+            <p>
+              <FaPhone className="inline mr-2 text-[#0A4D68]" /> Phone:{" "}
+              {patient.phone || "+91 XXXXXXXX"}
+            </p>
           </div>
         </div>
       </div>
@@ -73,17 +84,22 @@ const DoctorPatientDetailsPage = () => {
 
       {/* About Patient */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-3 text-[#0A4D68]">About Patient</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-[#0A4D68]">
+          About Patient
+        </h2>
         <p className="text-base leading-relaxed text-gray-700 bg-white p-6 rounded-xl shadow">
-          {patient.name} is a {patient.age}-year-old {patient.gender} currently seeking
-          medical consultation. Additional notes can be added here by the doctor. This
-          section may later include medical history, allergies, or remarks.
+          {patient.name} is a {patient.age}-year-old {patient.gender} currently
+          seeking medical consultation. Additional notes can be added here by
+          the doctor. This section may later include medical history,
+          allergies, or remarks.
         </p>
       </section>
 
       {/* Patient Files */}
       <section>
-        <h2 className="text-2xl font-semibold mb-5 text-[#0A4D68]">Patient Files</h2>
+        <h2 className="text-2xl font-semibold mb-5 text-[#0A4D68]">
+          Patient Files
+        </h2>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div

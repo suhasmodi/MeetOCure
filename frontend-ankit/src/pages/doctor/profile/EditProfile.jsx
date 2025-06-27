@@ -9,7 +9,7 @@ import {
   FaPencilAlt,
 } from "react-icons/fa";
 import profileImg from "/assets/doc_profile.png";
-import TopIcons from "../../../components/TopIcons"; // ✅ Imported
+import TopIcons from "../../../components/TopIcons";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const EditProfile = () => {
             Edit Profile
           </h1>
         </div>
-        <TopIcons /> {/* ✅ Replaced manual icons with reusable component */}
+        <TopIcons /> 
       </div>
 
       {/* Profile Image */}
