@@ -1,163 +1,198 @@
-import React, { useState, useEffect } from "react";
-import { FaPhoneAlt } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { FaPhoneAlt, FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const DualLoginPage = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [role, setRole] = useState("doctor");
+  const location = useLocation();
   const [phone, setPhone] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState("".padEnd(6, ""));
+  const [timer, setTimer] = useState(60);
+  const [role, setRole] = useState("doctor");
+  const [showPopup, setShowPopup] = useState(false);
+  const otpRefs = useRef([]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const roleParam = params.get("role");
-    if (roleParam === "patient" || roleParam === "doctor") {
-      setRole(roleParam);
-    }
+    if (roleParam === "patient" || roleParam === "doctor") setRole(roleParam);
   }, [location.search]);
 
-  const handleGetOtp = () => {
-    if (!phone || phone.length < 10) {
-      alert("Please enter a valid phone number.");
+  useEffect(() => {
+    let countdown;
+    if (otpSent && timer > 0) {
+      countdown = setInterval(() => setTimer((t) => t - 1), 1000);
+    }
+    return () => clearInterval(countdown);
+  }, [otpSent, timer]);
+
+  const handleSendCode = () => {
+    if (!/^\d{10}$/.test(phone)) {
+      alert("Enter valid 10-digit mobile number");
       return;
     }
     setOtpSent(true);
-    console.log(`Sending OTP to ${phone} for ${role}`);
+    setOtp("".padEnd(6, ""));
+    setTimer(60);
+    otpRefs.current[0]?.focus();
   };
 
-  const handleLogin = () => {
-    if (!otp || otp.length < 4) {
-      alert("Please enter valid OTP.");
-      return;
-    }
-    if (role === "doctor") {
-      navigate("/doctor-dashboard");
+  const handleOtpChange = (val, index) => {
+    if (!/^\d?$/.test(val)) return;
+    const newOtp = otp.split("");
+    newOtp[index] = val;
+    setOtp(newOtp.join(""));
+    if (val && index < 5) otpRefs.current[index + 1]?.focus();
+    if (!val && index > 0) otpRefs.current[index - 1]?.focus();
+  };
+
+  const handleVerify = () => {
+    if (otp.length === 6 && /^\d{6}$/.test(otp)) {
+      setShowPopup(true);
+      setTimeout(() => {
+        navigate(`/${role}-dashboard`);
+      }, 3000);
     } else {
-      navigate("/patient-dashboard");
+      alert("Enter valid 6-digit OTP");
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    otpSent ? handleVerify() : handleSendCode();
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] relative">
-      {/* Neon Glow */}
-      <div className="absolute w-full h-full overflow-hidden">
-        <div className="absolute top-1/4 left-10 w-72 h-72 bg-pink-500 opacity-20 blur-3xl rounded-full animate-pulse" />
-        <div className="absolute bottom-0 right-10 w-72 h-72 bg-cyan-400 opacity-20 blur-3xl rounded-full animate-pulse" />
-      </div>
+    <div className="min-h-screen bg-white font-[Poppins] flex items-center justify-center px-4 relative">
+      {/* Back Arrow */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 text-2xl text-[#004B5C] hover:text-[#003246] transition"
+      >
+        <FaArrowLeft />
+      </button>
 
-      {/* Left Panel */}
-      <div className="hidden lg:flex w-1/2 text-white items-center justify-center flex-col z-10">
-        <div className="text-center scale-110">
-          <h1 className="text-6xl font-extrabold tracking-widest bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
-            MeetoCure
+      {/* Center Box */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-xl bg-white text-center"
+        autoComplete="off"
+      >
+        <div className="flex flex-col items-center mb-10">
+          <img src="/assets/logo.png" alt="Logo" className="w-28 h-28 mb-6" />
+          <h1 className="text-4xl font-bold text-[#004B5C]">
+            {otpSent ? "Verify Code" : "Hi, Welcome!"}
           </h1>
-          <p className="text-lg font-medium italic mt-2 opacity-80 tracking-wide">
-            Caring Made Convenient.
+          <p className="text-base text-[#2D3A3A] mt-3 px-4">
+            {otpSent
+              ? "Enter the code we just sent you on your Mobile Number"
+              : "Enter your Mobile Number, we will send you a verification code."}
           </p>
-          <div className="mt-10 relative group">
-            {/* Aura Glow bg */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className={`w-44 h-44 rounded-full blur-2xl opacity-25 ${role === "doctor" ? "bg-cyan-400" : "bg-pink-400"} animate-pulse`} />
-            </div>
-            {/* Logo */}
-            <div className="relative bg-white rounded-full p-6 shadow-2xl w-36 h-36 mx-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-              <img
-                src="/assets/logo.png"
-                alt="Logo"
-                className={`w-32 h-32 object-contain drop-shadow-xl ${role === "doctor" ? "glow-logo-cyan" : "glow-logo-pink"} animate-bounce-slow`}
+        </div>
+
+        {!otpSent ? (
+          <>
+            <label className="block text-left text-sm font-semibold mb-2">
+              Mobile Number
+            </label>
+            <div className="flex items-center border border-[#7A869A] rounded-xl px-4 py-3 mb-6">
+              <FaPhoneAlt className="text-[#7A869A] mr-3" />
+              <input
+                type="tel"
+                placeholder="Enter Your Mobile Number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-500 text-base"
               />
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center z-10 px-4">
-        {/* Toggle */}
-        <div className="absolute top-6 right-6 flex gap-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full shadow px-4 py-1">
-          <button
-            className={`text-sm px-4 py-1 rounded-full transition font-semibold tracking-wide ${role === "doctor"
-              ? "bg-blue-600 text-white shadow-inner"
-              : "text-gray-300 hover:text-white"
-              }`}
-            onClick={() => setRole("doctor")}
-          >
-            Doctor
-          </button>
-          <button
-            className={`text-sm px-4 py-1 rounded-full transition font-semibold tracking-wide ${role === "patient"
-              ? "bg-blue-600 text-white shadow-inner"
-              : "text-gray-300 hover:text-white"
-              }`}
-            onClick={() => setRole("patient")}
-          >
-            Patient
-          </button>
-        </div>
-
-        {/* Form Card */}
-        <div className="bg-white/10 backdrop-blur-xl shadow-2xl rounded-2xl px-10 py-8 w-full max-w-md text-white border border-white/20">
-          <h2 className="text-4xl font-bold text-center mb-6 tracking-wide">
-            {role === "doctor" ? "Doctor Login" : "Patient Login"}
-          </h2>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Phone Number</label>
-              <div className="flex items-center border border-white/30 bg-white/5 rounded-lg px-3 py-2">
-                <FaPhoneAlt className="text-cyan-300 mr-2" />
+            <button
+              type="submit"
+              className={`w-full py-3 rounded-full font-semibold text-lg ${
+                phone.length === 10
+                  ? "bg-[#004B5C] text-white hover:bg-[#003246]"
+                  : "bg-gray-300 text-white cursor-not-allowed"
+              } transition`}
+              disabled={phone.length !== 10}
+            >
+              Send Code
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="flex justify-between gap-3 mb-6">
+              {[...Array(6)].map((_, idx) => (
                 <input
-                  type="tel"
-                  placeholder="Enter your phone number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full outline-none bg-transparent text-white placeholder-gray-300"
+                  key={idx}
+                  type="text"
+                  maxLength={1}
+                  value={otp[idx]}
+                  onChange={(e) => handleOtpChange(e.target.value, idx)}
+                  ref={(el) => (otpRefs.current[idx] = el)}
+                  className="w-14 h-14 border border-[#004B5C] rounded text-center text-2xl font-semibold outline-none"
                 />
-              </div>
+              ))}
             </div>
+            <button
+              type="submit"
+              className={`w-full py-3 rounded-full font-semibold text-lg ${
+                /^\d{6}$/.test(otp)
+                  ? "bg-[#004B5C] text-white hover:bg-[#003246]"
+                  : "bg-gray-300 text-white cursor-not-allowed"
+              } transition`}
+              disabled={!/^\d{6}$/.test(otp)}
+            >
+              Verify
+            </button>
 
-            {!otpSent ? (
-              <button
-                onClick={handleGetOtp}
-                className="w-full py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-blue-500 hover:to-cyan-600 text-white font-semibold transition-all shadow-lg"
-              >
-                Get OTP
-              </button>
-            ) : (
-              <>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Enter OTP</label>
-                  <input
-                    type="text"
-                    placeholder="Enter the OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="w-full border border-white/30 bg-white/5 text-white placeholder-gray-300 rounded-lg px-3 py-2 outline-none"
-                  />
-                </div>
-                <button
-                  onClick={handleLogin}
-                  className="w-full py-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-emerald-500 hover:to-green-600 text-white font-semibold transition-all shadow-lg"
+            <div className="text-center text-sm text-gray-500 mt-4">
+              Didn’t get the Code?{" "}
+              {timer > 0 ? (
+                <span className="text-gray-600">
+                  Time Left: 00:{String(timer).padStart(2, "0")}
+                </span>
+              ) : (
+                <span
+                  onClick={handleSendCode}
+                  className="text-[#004B5C] font-semibold underline cursor-pointer"
                 >
-                  Login
-                </button>
-              </>
-            )}
-
-            <div className="text-sm text-center mt-4 text-gray-300">
-              Don’t have an account?{" "}
-              <a
-                href={`/register?role=${role}`}
-                className="text-blue-400 font-medium underline"
-              >
-                Register
-              </a>
+                  Resend
+                </span>
+              )}
             </div>
+          </>
+        )}
+
+        {/* Registration Link */}
+        <div className="text-sm text-center mt-6">
+          Don’t have an account?{" "}
+          <span
+            onClick={() => navigate(`/register?role=${role}`)}
+            className="text-[#004B5C] font-semibold underline cursor-pointer"
+          >
+            Register here
+          </span>
+        </div>
+      </form>
+
+      {/* Success Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-[2rem] px-10 py-8 max-w-sm w-full text-center shadow-2xl">
+            <img
+              src="/assets/popups/success.png"
+              alt="Success"
+              className="w-28 h-28 object-contain mx-auto mb-6"
+            />
+            <h3 className="text-[22px] font-bold text-[#1F2A37] mb-2">
+              Login Successful
+            </h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Login successful! Redirecting...
+            </p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

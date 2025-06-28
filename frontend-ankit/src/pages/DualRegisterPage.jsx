@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt,
   FaUpload,
   FaPhoneAlt,
+  FaArrowLeft,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +17,7 @@ function getInitialRole() {
 
 const DualRegisterPage = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState(getInitialRole);
+  const [role] = useState(getInitialRole);
   const isDoctor = role === "doctor";
 
   const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ const DualRegisterPage = () => {
       return;
     }
     setOtpSent(true);
-    alert(`OTP sent to ${formData.phone} (dummy). Please enter 6-digit OTP.`);
+    alert(`OTP sent to ${formData.phone}. Please enter 6-digit OTP.`);
   };
 
   const handleVerifyOtp = (e) => {
@@ -69,294 +70,217 @@ const DualRegisterPage = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     if (!otpVerified) return;
+
     setShowPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    navigate(`/login?role=${role}`);
-  };
-
-  const handleRoleChange = (newRole) => {
-    setRole(newRole);
-    setOtpSent(false);
-    setOtp("");
-    setOtpVerified(false);
-    setFormData({
-      fullName: "",
-      dob: "",
-      gender: "",
-      address: "",
-      phone: "",
-      certificate: null,
-    });
+    setTimeout(() => {
+      navigate(`/login?role=${role}`);
+    }, 3000);
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] relative">
-      <div className="absolute w-full h-full overflow-hidden">
-        <div className="absolute top-1/4 left-10 w-72 h-72 bg-pink-500 opacity-20 blur-3xl rounded-full animate-pulse" />
-        <div className="absolute bottom-0 right-10 w-72 h-72 bg-cyan-400 opacity-20 blur-3xl rounded-full animate-pulse" />
+    <div className="min-h-screen bg-white font-[Poppins] px-6 pt-6 pb-28">
+      <button onClick={() => navigate(-1)} className="text-xl mb-4">
+        <FaArrowLeft />
+      </button>
+
+      {/* Header Logo */}
+      <div className="flex flex-col items-center text-center mb-6">
+        <img src="/assets/logo.png" alt="Logo" className="w-28 h-28 mb-4" />
+        <h1 className="text-3xl font-extrabold text-[#004B5C]">Hi, Welcome!</h1>
+        <p className="text-base text-gray-700 mt-1">
+          Fill the Details and Register Here
+        </p>
       </div>
 
-      {/* Left Panel */}
-      <div className="hidden lg:flex w-1/2 text-white items-center justify-center flex-col z-10">
-        <div className="text-center scale-110">
-          <h1 className="text-6xl font-extrabold tracking-widest bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
-            MeetoCure
-          </h1>
-          <p className="text-lg font-medium italic mt-2 opacity-80 tracking-wide">
-            Caring Made Convenient.
-          </p>
-          <div className="mt-10 relative group">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                className={`w-44 h-44 rounded-full blur-2xl opacity-25 ${
-                  role === "doctor" ? "bg-cyan-400" : "bg-pink-400"
-                } animate-pulse`}
-              />
-            </div>
-            <div className="relative bg-white rounded-full p-6 shadow-2xl w-36 h-36 mx-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-              <img
-                src="/assets/logo.png"
-                alt="Logo"
-                className={`w-32 h-32 object-contain drop-shadow-xl ${
-                  role === "doctor" ? "glow-logo-cyan" : "glow-logo-pink"
-                } animate-bounce-slow`}
-              />
-            </div>
+      {/* Form */}
+      <form
+        onSubmit={handleRegister}
+        className="max-w-md mx-auto space-y-6"
+        autoComplete="off"
+      >
+        {/* Full Name */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Full Name</label>
+          <div className="flex items-center border border-[#7A869A] rounded-xl px-3 py-2">
+            <FaUser className="text-[#7A869A] mr-2" />
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Enter Your Full Name"
+              className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-500"
+              required
+              value={formData.fullName}
+              onChange={handleChange}
+            />
           </div>
         </div>
-      </div>
 
-      {/* Right Panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center z-10 px-4">
-        <div className="absolute top-6 right-6 flex gap-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full shadow px-4 py-1">
-          <button
-            className={`text-sm px-4 py-1 rounded-full transition font-semibold tracking-wide ${
-              role === "doctor"
-                ? "bg-blue-600 text-white shadow-inner"
-                : "text-gray-300 hover:text-white"
-            }`}
-            onClick={() => handleRoleChange("doctor")}
-          >
-            Doctor
-          </button>
-          <button
-            className={`text-sm px-4 py-1 rounded-full transition font-semibold tracking-wide ${
-              role === "patient"
-                ? "bg-blue-600 text-white shadow-inner"
-                : "text-gray-300 hover:text-white"
-            }`}
-            onClick={() => handleRoleChange("patient")}
-          >
-            Patient
-          </button>
+        {/* DOB */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Date of Birth</label>
+          <div className="flex items-center border border-[#7A869A] rounded-xl px-3 py-2">
+            <input
+              type="date"
+              name="dob"
+              className="w-full outline-none bg-transparent text-gray-700"
+              required
+              value={formData.dob}
+              onChange={handleChange}
+            />
+            <FaCalendarAlt className="text-[#7A869A] ml-2" />
+          </div>
         </div>
 
-        {/* Form */}
-        <form
-          onSubmit={handleRegister}
-          className="bg-white/10 backdrop-blur-xl shadow-2xl rounded-2xl px-10 py-8 w-full max-w-md text-white border border-white/20 space-y-5"
-          autoComplete="off"
-        >
-          <h2 className="text-4xl font-bold text-center mb-6 tracking-wide">
-            {role === "doctor" ? "Doctor Registration" : "Patient Registration"}
-          </h2>
-
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
-            <div className="flex items-center border border-white/30 bg-white/5 rounded-lg px-3 py-2">
-              <FaUser className="text-cyan-300 mr-2" />
-              <input
-                type="text"
-                name="fullName"
-                placeholder="Enter your full name"
-                className="w-full outline-none bg-transparent text-white placeholder-gray-300"
-                required
-                value={formData.fullName}
-                onChange={handleChange}
-                disabled={otpSent}
-              />
-            </div>
-          </div>
-
-          {/* DOB */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Date of Birth</label>
-            <div className="flex items-center border border-white/30 bg-white/5 rounded-lg px-3 py-2">
-              <FaCalendarAlt className="text-cyan-300 mr-2" />
-              <input
-                type="date"
-                name="dob"
-                className="w-full outline-none bg-transparent text-white"
-                required
-                value={formData.dob}
-                onChange={handleChange}
-                disabled={otpSent}
-              />
-            </div>
-          </div>
-
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Gender</label>
-            <div className="flex gap-4">
-              {["Male", "Female", "Other"].map((gender) => (
-                <label key={gender} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={gender}
-                    required
-                    onChange={handleChange}
-                    checked={formData.gender === gender}
-                    disabled={otpSent}
-                  />
-                  {gender}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Address */}
-          {role === "doctor" && (
-            <div>
-              <label className="block text-sm font-medium mb-1">Address</label>
-              <div className="flex items-center border border-white/30 bg-white/5 rounded-lg px-3 py-2">
-                <FaMapMarkerAlt className="text-cyan-300 mr-2" />
+        {/* Gender */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Gender</label>
+          <div className="flex gap-4">
+            {["Male", "Female", "Other"].map((gender) => (
+              <label
+                key={gender}
+                className={`flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-medium cursor-pointer transition-all duration-200 ${formData.gender === gender
+                  ? "bg-[#004B5C] text-white"
+                  : "border-[#7A869A] text-[#2C3E50]"
+                  }`}
+              >
                 <input
-                  type="text"
-                  name="address"
-                  placeholder="Enter your hospital or clinic address"
-                  className="w-full outline-none bg-transparent text-white placeholder-gray-300"
-                  required
-                  value={formData.address}
+                  type="radio"
+                  name="gender"
+                  value={gender}
                   onChange={handleChange}
-                  disabled={otpSent}
+                  className="hidden"
                 />
-              </div>
-            </div>
-          )}
-
-          {/* Phone + OTP */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Phone Number</label>
-            <div className="flex items-center border border-white/30 bg-white/5 rounded-lg px-3 py-2">
-              <FaPhoneAlt className="text-cyan-300 mr-2" />
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Enter your phone number"
-                className="w-full outline-none bg-transparent text-white placeholder-gray-300"
-                required
-                value={formData.phone}
-                onChange={handleChange}
-                disabled={otpSent}
-              />
-              {!otpSent ? (
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  className="ml-3 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold shadow-lg transition"
-                >
-                  Send OTP
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleVerifyOtp}
-                  className="ml-3 px-4 py-2 rounded-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-lg transition"
-                >
-                  Verify OTP
-                </button>
-              )}
-            </div>
+                <span>{gender}</span>
+              </label>
+            ))}
           </div>
+        </div>
 
-          {otpSent && (
-            <div>
-              <label className="block text-sm font-medium mb-1">Enter OTP</label>
+        {/* Phone */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Phone Number</label>
+          <div className="flex items-center border border-[#7A869A] rounded-xl px-3 py-2">
+            <FaPhoneAlt className="text-[#7A869A] mr-2" />
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Enter Your Phone Number"
+              className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-500"
+              required
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </div>
+          {!otpSent ? (
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              className="mt-2 px-4 py-2 bg-[#004B5C] text-white rounded-full font-medium"
+            >
+              Send OTP
+            </button>
+          ) : (
+            <div className="mt-3">
+              <label className="block text-sm font-semibold mb-1">Enter OTP</label>
               <input
                 type="text"
                 maxLength={6}
-                placeholder="6-digit OTP"
-                className="w-full border border-white/30 bg-white/5 text-white placeholder-gray-300 rounded-lg px-3 py-2 outline-none tracking-widest text-center text-xl"
                 value={otp}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (/^\d*$/.test(val) && val.length <= 6) setOtp(val);
-                }}
-                required
-                autoFocus
-                disabled={otpVerified}
+                onChange={(e) => setOtp(e.target.value)}
+                className="w-full border border-[#7A869A] px-4 py-2 rounded-xl outline-none placeholder-gray-500"
+                placeholder="6-digit OTP"
               />
+              <button
+                type="button"
+                onClick={handleVerifyOtp}
+                className="mt-2 px-4 py-2 bg-green-600 text-white rounded-full font-medium"
+              >
+                Verify OTP
+              </button>
             </div>
           )}
+        </div>
 
-          {role === "doctor" && (
-            <div>
-              <label className="block text-sm font-medium mb-1">Upload Certificate Proof</label>
-              <div className="border border-dashed border-white/30 rounded-lg p-4 text-center bg-white/5">
-                <FaUpload className="mx-auto text-2xl text-cyan-300 mb-2" />
-                <p className="text-gray-300">
-                  Drag & Drop or <span className="text-blue-400 underline cursor-pointer">Browse</span>
-                </p>
+        {/* Address (Only for Doctor) */}
+        {isDoctor && (
+          <div>
+            <label className="block text-sm font-semibold mb-1">Address</label>
+            <input
+              type="text"
+              name="address"
+              placeholder="Enter your Hospital or Clinic Address"
+              className="w-full border border-[#7A869A] px-4 py-2 rounded-xl outline-none placeholder-gray-500"
+              required
+              value={formData.address}
+              onChange={handleChange}
+            />
+          </div>
+        )}
+
+        {/* Certificate Upload (Only for Doctor) */}
+        {isDoctor && (
+          <div>
+            <label className="block text-base font-semibold text-[#004B5C] mb-2">
+              Upload Certificate Proof
+            </label>
+            <div className="border-2 border-dashed border-[#004B5C] p-4 rounded-xl text-center">
+              <label className="block bg-[#004B5C] text-white py-2 rounded-full w-full cursor-pointer">
+                Browse Your Device
                 <input
                   type="file"
                   name="certificate"
                   accept="image/*,.pdf"
                   className="hidden"
                   onChange={handleChange}
-                  disabled={otpSent}
                 />
+              </label>
+              <p className="mt-2 text-sm text-gray-600">Or Drag & Drop here</p>
+              <div className="w-full h-24 border border-dashed border-[#004B5C] mt-4 flex items-center justify-center text-3xl text-[#004B5C]">
+                +
               </div>
-            </div>
-          )}
-
-          {/* Register btn*/}
-          <div className="pt-4 text-center">
-            <button
-              type="submit"
-              disabled={!otpVerified}
-              className={`w-full px-6 py-3 rounded-full font-semibold shadow-xl transition 
-                ${otpVerified ? "bg-green-600 hover:bg-green-700 text-white" : "bg-gray-400 cursor-not-allowed text-white/70"}`}
-            >
-              Register
-            </button>
-            <p className="mt-3 text-sm text-gray-300">
-              Already have an account?{" "}
-              <span
-                onClick={() => navigate(`/login?role=${role}`)}
-                className="text-blue-400 cursor-pointer underline"
-              >
-                Login
-              </span>
-            </p>
-          </div>
-        </form>
-
-        {/* Popup */}
-        {showPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-8 max-w-sm text-center shadow-xl">
-              <h3 className="text-2xl font-bold mb-4 text-green-700">
-                Registration Successful!
-              </h3>
-              <p className="mb-6 text-gray-700">
-                Thank you for registering as a {role}. You can now login.
-              </p>
-              <button
-                onClick={handleClosePopup}
-                className="px-6 py-2 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition"
-              >
-                Close
-              </button>
             </div>
           </div>
         )}
-      </div>
+
+        {/* Register button */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full py-3 rounded-full font-semibold bg-[#004B5C] text-white hover:bg-[#003246] transition"
+          >
+            Register
+          </button>
+          {/* Login Redirect */}
+          <div className="text-center text-sm text-gray-600 mt-4">
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate(`/login?role=${role}`)}
+              className="text-[#004B5C] font-semibold underline cursor-pointer"
+            >
+              Login here
+            </span>
+          </div>
+        </div>
+      </form>
+
+      {/* Popup Success */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-[2rem] px-10 py-8 max-w-sm w-full text-center shadow-2xl">
+            <img
+              src="/assets/popups/success.png"
+              alt="Success"
+              className="w-28 h-28 object-contain mx-auto mb-6"
+            />
+            <h3 className="text-[22px] font-bold text-[#1F2A37] mb-2">
+              Registration Successful
+            </h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Registration successful! Redirecting to the home screen.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
