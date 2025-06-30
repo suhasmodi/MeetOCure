@@ -1,19 +1,13 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-
 const {
-  SignupUser,
-  loginUser,
-  completeProfile,
+  sendOtp,
+  verifyOtp,
+  register,
 } = require("../controllers/authController");
 
-const protect = require("../middleware/authMiddleware");
-
-
-router.post('/signup', SignupUser);
-router.post('/login', loginUser);
-
-
-router.put('/complete-profile', protect(["doctor", "patient"]), completeProfile);
+router.post("/send-otp", sendOtp);        // Send OTP to phone
+router.post("/verify-otp", verifyOtp);    // Verify OTP and login
+router.post("/register", register);       // Register doctor or patient
 
 module.exports = router;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   FaUser,
   FaCalendarAlt,
@@ -66,10 +67,42 @@ const DualRegisterPage = () => {
     setOtpVerified(true);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (!otpVerified) return;
-    setShowPopup(true);
+    await registerUser();
+  };
+
+  const registerUser = async () => {
+    try {
+      // Prepare form data for doctor/patient
+      const data = new FormData();
+      data.append("fullName", formData.fullName);
+      data.append("dob", formData.dob);
+      data.append("gender", formData.gender);
+      data.append("phone", formData.phone);
+      if (isDoctor) {
+        data.append("address", formData.address);
+        if (formData.certificate) data.append("certificate", formData.certificate);
+      }
+      data.append("role", role);
+
+      // Adjust the endpoint as per your backend
+      const url = "http://localhost:5000/api/auth/register";
+      await axios.post(url, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // If backend returns a token, you can save it:
+      // localStorage.setItem("token", response.data.token);
+
+      setShowPopup(true);
+    } catch (err) {
+      alert(
+        err.response?.data?.message ||
+          "Registration failed. Please check your details and try again."
+      );
+    }
   };
 
   const handleClosePopup = () => {
