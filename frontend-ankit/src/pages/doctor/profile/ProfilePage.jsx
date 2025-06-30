@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import BottomNav from "../../../components/BottomNav";
 import TopIcons from "../../../components/TopIcons";
+import LogoutModal from "../../../components/LogoutModal";
 import profileImg from "/assets/doc_profile.png";
 import { motion } from "framer-motion";
 
@@ -42,7 +43,7 @@ const ProfilePage = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
-        localStorage.setItem("doctorProfileImage", reader.result); 
+        localStorage.setItem("doctorProfileImage", reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -126,6 +127,18 @@ const ProfilePage = () => {
       <div className="block md:hidden fixed bottom-0 left-0 right-0">
         <BottomNav />
       </div>
+
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <LogoutModal
+          onCancel={() => setShowLogoutModal(false)}
+          onConfirm={() => {
+            localStorage.clear();
+            setShowLogoutModal(false);
+            navigate("/login?role=doctor");
+          }}
+        />
+      )}
     </div>
   );
 };

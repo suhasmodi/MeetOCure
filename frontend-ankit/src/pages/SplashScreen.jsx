@@ -18,15 +18,15 @@ const SplashScreen = () => {
       setCurrentIndex((prev) =>
         prev === splashImages.length - 1 ? prev : prev + 1
       );
-    }, 5000);
+    }, 3000);
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
     if (currentIndex === splashImages.length - 1) {
       const redirect = setTimeout(() => {
-        navigate("/login");
-      }, 5000);
+        navigate("/choose-role");
+      }, 3000); 
       return () => clearTimeout(redirect);
     }
   }, [currentIndex, navigate]);
