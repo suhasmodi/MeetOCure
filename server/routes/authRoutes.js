@@ -7,9 +7,9 @@ const {
   checkPhone,
 } = require("../controllers/authController");
 
-router.post("/send-otp", sendOtp);        // Send OTP to phone
+router.post("/send-otp", sendOtp);       
 router.post("/verify-otp", verifyOtp); 
-router.post("/check-phone",checkPhone)   // Verify OTP and login
-router.post("/register", register);       // Register doctor or patient
+router.post("/check-phone",checkPhone)  
+router.post("/register", register);       
 
 module.exports = router;
