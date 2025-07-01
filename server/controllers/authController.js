@@ -67,8 +67,6 @@ const verifyOtp = async (req, res) => {
   }
 };
 
-
-
 // Register (doctor/patient)
 const register = async (req, res) => {
   try {
@@ -96,9 +94,16 @@ const register = async (req, res) => {
   }
 };
 
+// Check if phone is registered
+const checkPhone = async (req, res) => {
+  const { phone } = req.body;
+  const user = await User.findOne({ phone });
+  res.json({ exists: !!user });
+};
 
 module.exports = {
   sendOtp,
   verifyOtp,
   register,
+  checkPhone,
 };

@@ -95,20 +95,27 @@ const DualRegisterPage = () => {
     return;
   }
 
+  // Check for address if role is doctor
+  if (role === "doctor" && !formData.address.trim()) {
+    alert("Please enter your address before registering.");
+    return;
+  }
+
   try {
     const payload = {
-      name: formData.fullName,                   // maps to "name" in DB
-      dob: formData.dob,                         // ISO string or valid date
+      name: formData.fullName,
+      dob: formData.dob,
       gender: formData.gender,
       phone: formData.phone,
-      role: role,                                // "doctor" or "patient"
+      role: role,
+      address: formData.address
     };
 
     // Add doctor-specific fields
     if (role === "doctor") {
       payload.address = formData.address;
       if (formData.certificateUrl) {
-        payload.certificateUrl = formData.certificateUrl; // should be a string URL
+        payload.certificateUrl = formData.certificateUrl;
       }
     }
 

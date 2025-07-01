@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPhoneAlt, FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios"; // ✅ Added for API calls
+import axios from "axios"; // Added for API calls
 
 const DualLoginPage = () => {
   const navigate = useNavigate();
@@ -35,13 +35,20 @@ const DualLoginPage = () => {
     }
 
     try {
+      // First, check if phone exists in DB
+      const res = await axios.post("http://localhost:5000/api/auth/check-phone", { phone });
+      if (!res.data.exists) {
+        alert("This phone number is not registered. Please register first.");
+        return;
+      }
+      // If exists, send OTP
       await axios.post("http://localhost:5000/api/auth/send-otp", { phone });
       setOtpSent(true);
       setOtp("".padEnd(6, ""));
       setTimer(60);
       otpRefs.current[0]?.focus();
     } catch (err) {
-      alert("❌ Failed to send OTP: " + (err.response?.data?.message || err.message));
+      alert("Failed to check phone or send OTP: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -75,7 +82,7 @@ const DualLoginPage = () => {
         navigate(`/${role}-dashboard`);
       }, 3000);
     } catch (err) {
-      alert("❌ OTP verification failed: " + (err.response?.data?.message || err.message));
+      alert("OTP verification failed: " + (err.response?.data?.message || err.message));
     }
   };
 
