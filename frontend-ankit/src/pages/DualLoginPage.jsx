@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPhoneAlt, FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios"; // ✅ Added for API calls
 
 const DualLoginPage = () => {
   const navigate = useNavigate();
@@ -27,15 +28,21 @@ const DualLoginPage = () => {
     return () => clearInterval(countdown);
   }, [otpSent, timer]);
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (!/^\d{10}$/.test(phone)) {
       alert("Enter valid 10-digit mobile number");
       return;
     }
-    setOtpSent(true);
-    setOtp("".padEnd(6, ""));
-    setTimer(60);
-    otpRefs.current[0]?.focus();
+
+    try {
+      await axios.post("http://localhost:5000/api/auth/send-otp", { phone });
+      setOtpSent(true);
+      setOtp("".padEnd(6, ""));
+      setTimer(60);
+      otpRefs.current[0]?.focus();
+    } catch (err) {
+      alert("❌ Failed to send OTP: " + (err.response?.data?.message || err.message));
+    }
   };
 
   const handleOtpChange = (val, index) => {
@@ -47,14 +54,28 @@ const DualLoginPage = () => {
     if (!val && index > 0) otpRefs.current[index - 1]?.focus();
   };
 
-  const handleVerify = () => {
-    if (otp.length === 6 && /^\d{6}$/.test(otp)) {
+  const handleVerify = async () => {
+    if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+      alert("Enter valid 6-digit OTP");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", {
+        phone,
+        otp,
+      });
+
+      // Optionally store token in localStorage/sessionStorage
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data));
+
       setShowPopup(true);
       setTimeout(() => {
         navigate(`/${role}-dashboard`);
       }, 3000);
-    } else {
-      alert("Enter valid 6-digit OTP");
+    } catch (err) {
+      alert("❌ OTP verification failed: " + (err.response?.data?.message || err.message));
     }
   };
 

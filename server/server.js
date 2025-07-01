@@ -21,11 +21,6 @@ app.use("/api/chat", require("./routes/chatRoutes"));
 app.use("/api/search", require("./routes/searchRoutes"));
 app.use("/api/doc&hosp", require("./routes/doc&hospRoutes"));
 
-
-
-
-
-
 app.get("/", (req, res) => 
 {
     res.send("API is Working");

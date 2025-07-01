@@ -4,18 +4,18 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: function () { return this.isProfileComplete; },
     },
 
     dob: {
       type: Date,
-      required: true,
+      required: function () { return this.isProfileComplete; },
     },
 
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
-      required: true,
+      enum: ["Male", "Female", "Other"],
+      required: function () { return this.isProfileComplete; },
     },
 
     phone: {
@@ -31,18 +31,18 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Fields for doctors only
+    // Doctor only fields
     address: {
       type: String,
       required: function () {
-        return this.role === "doctor";
+        return this.role === "doctor" && this.isProfileComplete;
       },
     },
 
     certificateUrl: {
-      type: String, // File or cloud link
+      type: String,
       required: function () {
-        return this.role === "doctor";
+        return this.role === "doctor" && this.isProfileComplete;
       },
     },
 
@@ -64,7 +64,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Optional index for performance if filtering by role/specialization
 userSchema.index({ role: 1, specialization: 1 });
 
 module.exports = mongoose.model("User", userSchema);

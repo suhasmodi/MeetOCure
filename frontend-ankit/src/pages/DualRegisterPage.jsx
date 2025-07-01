@@ -8,6 +8,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function getInitialRole() {
   const params = new URLSearchParams(window.location.search);
@@ -45,26 +46,93 @@ const DualRegisterPage = () => {
 
   const isValidPhone = (phone) => /^\d{10}$/.test(phone);
 
-  const handleSendOtp = () => {
-    if (!isValidPhone(formData.phone)) return;
-    setOtpSent(true);
+  const handleSendOtp = async () => {
+  if (!isValidPhone(formData.phone)) return;
+  try {
+      await axios.post("http://localhost:5000/api/auth/send-otp", {
+        phone: formData.phone,
+      });
+      setOtpSent(true);
+      alert("OTP sent!");
+    } catch (err) {
+      alert("Failed to send OTP",(err.message));
+    }
   };
 
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    if (!otpSent) return;
-    if (otp.length !== 6 || !/^\d{6}$/.test(otp)) return;
+  const handleVerifyOtp = async (e) => {
+  e.preventDefault();
+
+  if (!otpSent) {
+    alert("OTP not sent yet.");
+    return;
+  }
+
+  if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+    alert("Enter a valid 6-digit OTP.");
+    return;
+  }
+
+  try {
+    await axios.post("http://localhost:5000/api/auth/verify-otp", {
+      phone: formData.phone,
+      otp,
+    });
+
     setOtpVerified(true);
-  };
+    alert("✅ OTP verified successfully!");
+  } catch (err) {
+    console.error(err);
+    alert(`❌ Invalid OTP: ${err?.response?.data?.message || err.message}`);
+  }
+};
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    if (!otpVerified) return;
+
+  const handleRegister = async (e) => {
+  e.preventDefault();
+
+  if (!otpVerified) {
+    alert("Please verify OTP before registering.");
+    return;
+  }
+
+  try {
+    const payload = {
+      name: formData.fullName,                   // maps to "name" in DB
+      dob: formData.dob,                         // ISO string or valid date
+      gender: formData.gender,
+      phone: formData.phone,
+      role: role,                                // "doctor" or "patient"
+    };
+
+    // Add doctor-specific fields
+    if (role === "doctor") {
+      payload.address = formData.address;
+      if (formData.certificateUrl) {
+        payload.certificateUrl = formData.certificateUrl; // should be a string URL
+      }
+    }
+
+    const response = await axios.post(
+      "http://localhost:5000/api/auth/register",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("✅ Registration successful:", response.data);
     setShowPopup(true);
     setTimeout(() => {
       navigate(`/login?role=${role}`);
     }, 3000);
-  };
+  } catch (err) {
+    console.error("Registration failed:", err);
+    alert("❌ Registration failed: " + (err.response?.data?.message || err.message));
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-white font-[Poppins] px-6 pt-6 pb-28">

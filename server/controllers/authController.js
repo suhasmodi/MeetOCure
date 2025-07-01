@@ -30,37 +30,51 @@ const sendOtp = async (req, res) => {
 
 // Verify OTP and login/register
 const verifyOtp = async (req, res) => {
-  const { phone, otp } = req.body;
+  try {
+    const { phone, otp, role } = req.body;
 
-  const otpRecord = await Otp.findOne({ phone });
+    const otpRecord = await Otp.findOne({ phone });
 
-  if (!otpRecord || otpRecord.otp !== otp || otpRecord.expiresAt < new Date()) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
+    if (!otpRecord || otpRecord.otp !== otp || otpRecord.expiresAt < new Date()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    let user = await User.findOne({ phone });
+
+    if (!user) {
+      user = await User.create({
+        phone,
+        role: role || "patient",
+        isProfileComplete: false,
+      });
+    }
+
+    const token = generateToken(user._id, user.role);
+
+    await Otp.deleteOne({ phone });
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      phone: user.phone,
+      role: user.role,
+      isProfileComplete: user.isProfileComplete,
+      token,
+    });
+  } catch (err) {
+    console.error("OTP verification error:", err);
+    res.status(500).json({ message: "Server error" });
   }
-
-  let user = await User.findOne({ phone });
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found. Please register." });
-  }
-
-  const token = generateToken(user._id, user.role);
-
-  await Otp.deleteOne({ phone }); // Clean up OTP
-
-  res.json({
-    _id: user._id,
-    name: user.name,
-    phone: user.phone,
-    role: user.role,
-    token,
-  });
 };
+
+
 
 // Register (doctor/patient)
 const register = async (req, res) => {
   try {
     const { name, dob, gender, phone, address, certificateUrl, role } = req.body;
+
+    // Validate required fields as needed
 
     const existing = await User.findOne({ phone });
     if (existing) return res.status(400).json({ message: "Phone already registered" });
@@ -77,9 +91,11 @@ const register = async (req, res) => {
 
     res.status(201).json({ message: "User registered. Please login using OTP." });
   } catch (err) {
+    console.error("Register error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 module.exports = {
   sendOtp,
