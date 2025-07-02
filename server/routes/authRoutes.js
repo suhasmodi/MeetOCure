@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer(); 
 const {
   sendOtp,
   verifyOtp,
@@ -10,6 +12,6 @@ const {
 router.post("/send-otp", sendOtp);       
 router.post("/verify-otp", verifyOtp); 
 router.post("/check-phone",checkPhone)  
-router.post("/register", register);       
+router.post("/register",upload.single("certificate"), register);       
 
 module.exports = router;

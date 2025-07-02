@@ -31,7 +31,7 @@ const sendOtp = async (req, res) => {
 // Verify OTP and login/register
 const verifyOtp = async (req, res) => {
   try {
-    const { phone, otp, role } = req.body;
+    const { phone, otp } = req.body;
 
     const otpRecord = await Otp.findOne({ phone });
 
@@ -39,14 +39,12 @@ const verifyOtp = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
-    let user = await User.findOne({ phone });
+    const user = await User.findOne({ phone });
 
     if (!user) {
-      user = await User.create({
-        phone,
-        role: role || "patient",
-        isProfileComplete: false,
-      });
+      // Do NOT create user here!
+      await Otp.deleteOne({ phone });
+      return res.json({ verified: true, message: "OTP verified. Please complete registration." });
     }
 
     const token = generateToken(user._id, user.role);
@@ -70,9 +68,12 @@ const verifyOtp = async (req, res) => {
 // Register (doctor/patient)
 const register = async (req, res) => {
   try {
-    const { name, dob, gender, phone, address, certificateUrl, role } = req.body;
+    const { name, dob, gender, phone, address, role } = req.body;
 
-    // Validate required fields as needed
+    let certificateUrl = undefined;
+    if (role === "doctor" && req.file) {
+      certificateUrl = req.file.path; 
+    }
 
     const existing = await User.findOne({ phone });
     if (existing) return res.status(400).json({ message: "Phone already registered" });

@@ -95,50 +95,41 @@ const DualRegisterPage = () => {
     return;
   }
 
-  // Check for address if role is doctor
   if (role === "doctor" && !formData.address.trim()) {
     alert("Please enter your address before registering.");
     return;
   }
 
   try {
-    const payload = {
-      name: formData.fullName,
-      dob: formData.dob,
-      gender: formData.gender,
-      phone: formData.phone,
-      role: role,
-      address: formData.address
-    };
-
-    // Add doctor-specific fields
+    const data = new FormData();
+    data.append("name", formData.fullName);
+    data.append("dob", formData.dob);
+    data.append("gender", formData.gender);
+    data.append("phone", formData.phone);
+    data.append("role", role);
     if (role === "doctor") {
-      payload.address = formData.address;
-      if (formData.certificateUrl) {
-        payload.certificateUrl = formData.certificateUrl;
+      data.append("address", formData.address);
+      if (formData.certificate) {
+        data.append("certificate", formData.certificate);
       }
     }
 
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    await axios.post("http://localhost:5000/api/auth/register", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-    console.log("✅ Registration successful:", response.data);
     setShowPopup(true);
     setTimeout(() => {
       navigate(`/login?role=${role}`);
     }, 3000);
   } catch (err) {
     console.error("Registration failed:", err);
-    alert("❌ Registration failed: " + (err.response?.data?.message || err.message));
+    alert("Registration failed: " + (err.response?.data?.message || err.message));
   }
 };
+
 
 
   return (
