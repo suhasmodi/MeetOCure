@@ -51,6 +51,7 @@ const DualRegisterPage = () => {
   try {
       await axios.post("https://meetocure.onrender.com/api/auth/send-otp", {
         phone: formData.phone,
+        withCredentials: true,
       });
       setOtpSent(true);
       alert("OTP sent!");

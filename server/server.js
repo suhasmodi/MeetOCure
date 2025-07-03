@@ -27,5 +27,18 @@ app.get("/", (req, res) =>
     res.send("API is Working");
 });
 
+const cors = require("cors");
+
+// Allow requests from your frontend domain
+const allowedOrigins = [
+  "https://meet-o-cure-oneterabyte7s-projects.vercel.app"
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
