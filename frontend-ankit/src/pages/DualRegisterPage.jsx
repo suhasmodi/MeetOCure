@@ -49,7 +49,7 @@ const DualRegisterPage = () => {
   const handleSendOtp = async () => {
   if (!isValidPhone(formData.phone)) return;
   try {
-      await axios.post("http://localhost:5000/api/auth/send-otp", {
+      await axios.post("https://meetocure.onrender.com/api/auth/send-otp", {
         phone: formData.phone,
       });
       setOtpSent(true);
@@ -73,7 +73,7 @@ const DualRegisterPage = () => {
   }
 
   try {
-    await axios.post("http://localhost:5000/api/auth/verify-otp", {
+    await axios.post("https://meetocure.onrender.com/api/auth/verify-otp", {
       phone: formData.phone,
       otp,
     });
@@ -114,7 +114,7 @@ const DualRegisterPage = () => {
       }
     }
 
-    await axios.post("http://localhost:5000/api/auth/register", data, {
+    await axios.post("https://meetocure.onrender.com/api/auth/register", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

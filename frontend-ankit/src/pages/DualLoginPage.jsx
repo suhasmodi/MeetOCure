@@ -36,13 +36,13 @@ const DualLoginPage = () => {
 
     try {
       // First, check if phone exists in DB
-      const res = await axios.post("http://localhost:5000/api/auth/check-phone", { phone });
+      const res = await axios.post("https://meetocure.onrender.com/api/auth/check-phone", { phone });
       if (!res.data.exists) {
         alert("This phone number is not registered. Please register first.");
         return;
       }
       // If exists, send OTP
-      await axios.post("http://localhost:5000/api/auth/send-otp", { phone });
+      await axios.post("https://meetocure.onrender.com/api/auth/send-otp", { phone });
       setOtpSent(true);
       setOtp("".padEnd(6, ""));
       setTimer(60);
@@ -68,7 +68,7 @@ const DualLoginPage = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", {
+      const res = await axios.post("https://meetocure.onrender.com/api/auth/verify-otp", {
         phone,
         otp,
       });
