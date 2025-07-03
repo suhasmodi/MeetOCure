@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Otp = require("../models/Otp");
 const jwt = require("jsonwebtoken");
+const twilio = require("twilio");
 
 // Generate random 6-digit OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -10,23 +11,40 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// Send OTP (Mocked, no third-party API)
+
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
 const sendOtp = async (req, res) => {
-  const { phone } = req.body;
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({ message: "Phone number is required" });
+    }
 
-  const otpCode = generateOTP();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    const otpCode = generateOTP();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-  await Otp.findOneAndUpdate(
-    { phone },
-    { phone, otp: otpCode, expiresAt },
-    { upsert: true }
-  );
+    // Save or update OTP in DB
+    await Otp.findOneAndUpdate(
+      { phone },
+      { phone, otp: otpCode, expiresAt },
+      { upsert: true }
+    );
 
-  console.log(`OTP for ${phone}: ${otpCode}`); // Mock "send"
+    // Send OTP via Twilio
+    await client.messages.create({
+      body: `Your MeetOCure OTP is: ${otpCode}`,
+      from: process.env.TWILIO_PHONE,   // e.g., +1415XXXXXXX
+      to: `+91${phone}`                // assumes Indian numbers
+    });
 
-  res.json({ message: "OTP sent successfully (check console)" });
+    res.json({ message: "OTP sent successfully" });
+  } catch (err) {
+    console.error("Twilio error:", err.message);
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
 };
+
 
 // Verify OTP and login/register
 const verifyOtp = async (req, res) => {
