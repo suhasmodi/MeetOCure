@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import profileImg from "/assets/doc_profile.png";
 import TopIcons from "../../../components/TopIcons";
+import axios from "axios";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -40,10 +41,32 @@ const EditProfile = () => {
     setForm((prev) => ({ ...prev, gender }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated profile:", form);
-    navigate("/doctor/profile");
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        "https://meetocure.onrender.com/api/doctor/profile",
+        {
+          name: form.name,
+          phone: form.phone,
+          dob: form.dob,
+          gender: form.gender,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Profile updated successfully!");
+      navigate("/doctor/profile");
+    } catch (err) {
+      alert(
+        "Failed to update profile: " +
+          (err.response?.data?.message || err.message)
+      );
+    }
   };
 
   return (
@@ -59,7 +82,7 @@ const EditProfile = () => {
             Edit Profile
           </h1>
         </div>
-        <TopIcons /> 
+        <TopIcons />
       </div>
 
       {/* Profile Image */}
