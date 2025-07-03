@@ -7,10 +7,6 @@ const cors = require("cors");
 dotenv.config();
 connectDB();
 
-const allowedOrigins = [
-  "https://meet-o-cure-oneterabyte7s-projects.vercel.app"
-];
-
 const app = express();
 app.use(cors());
 app.use(express.json());
