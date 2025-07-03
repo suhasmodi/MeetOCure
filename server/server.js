@@ -2,9 +2,14 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const cors = require("cors");
 
 dotenv.config();
 connectDB();
+
+const allowedOrigins = [
+  "https://meet-o-cure-oneterabyte7s-projects.vercel.app"
+];
 
 const app = express();
 app.use(cors());
@@ -20,6 +25,11 @@ app.use("/api/availability", require("./routes/availabilityRoutes"));
 app.use("/api/chat", require("./routes/chatRoutes"));
 app.use("/api/search", require("./routes/searchRoutes"));
 app.use("/api/doc&hosp", require("./routes/doc&hospRoutes"));
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 
 app.get("/", (req, res) => 
 {
