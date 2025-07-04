@@ -15,8 +15,7 @@ import BottomNav from "../../../components/BottomNav";
 import TopIcons from "../../../components/TopIcons";
 import LogoutModal from "../../../components/LogoutModal";
 import profileImg from "/assets/doc_profile.png";
-//import { motion } from "framer-motion";
-import axios from "axios";
+import { motion } from "framer-motion";
 
 const options = [
   { icon: <FaUserEdit />, label: "Edit Profile", path: "/doctor/profile/edit" },
@@ -36,33 +35,6 @@ const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState(() =>
     localStorage.getItem("doctorProfileImage") || defaultImage
   );
-
-  // New: State for name and phone from DB
-  const [doctorName, setDoctorName] = useState("");
-  const [doctorPhone, setDoctorPhone] = useState("");
-
-  // Fetch doctor info from DB on mount
-  useEffect(() => {
-    const fetchDoctorProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(
-          "https://meetocure.onrender.com/api/doctor/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setDoctorName(res.data.name || "");
-        setDoctorPhone(res.data.phone || "");
-        if (res.data.photo) setProfileImage(res.data.photo);
-      } catch {
-        // fallback: keep localStorage image and show empty name/phone
-      }
-    };
-    fetchDoctorProfile();
-  }, []);
 
   // Save new image to localStorage
   const handleImageChange = (e) => {
@@ -122,9 +94,8 @@ const ProfilePage = () => {
             />
           </label>
         </div>
-        {/* Show name and phone from DB */}
-        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">{doctorName}</h2>
-        <p className="text-[#6B7280] mb-6">{doctorPhone ? `+91 ${doctorPhone}` : ""}</p>
+        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">Nutan Sai Nandam</h2>
+        <p className="text-[#6B7280] mb-6">+91 8639068288</p>
       </motion.div>
 
       {/* Profile Options */}
