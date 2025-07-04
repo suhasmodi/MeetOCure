@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import BottomNav from "../../../components/BottomNav";
 import TopIcons from "../../../components/TopIcons";
+import axios from "axios";
 
 const timeSlots = [
   "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
@@ -25,9 +26,34 @@ const ChangeAvailability = () => {
 
   const resetSlots = () => setSelectedSlots([]);
 
-  const handleConfirm = () => {
-    console.log("Updated availability:", selectedDate, selectedSlots);
-    navigate("/doctor/availability");
+  const handleConfirm = async () => {
+    if (!selectedDate || selectedSlots.length === 0) {
+      alert("Please select a date and at least one slot.");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "https://meetocure.onrender.com/api/availability",
+        {
+          days: [
+            {
+              date: selectedDate,
+              slots: selectedSlots,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Availability updated!");
+      navigate("/doctor/availability");
+    } catch (err) {
+      alert("Failed to update availability: " + (err.response?.data?.message || err.message));
+    }
   };
 
   return (
