@@ -3,14 +3,28 @@ const Availability = require("../models/Availability");
 const setAvailability = async (req, res) => {
   try {
     const doctorId = req.user.id;
-    const { days } = req.body;
+    const { days } = req.body; // days is an array with one or more new days
 
-    
-    const availability = await Availability.findOneAndUpdate(
-      { doctor: doctorId },
-      { doctor: doctorId, days },
-      { new: true, upsert: true }
-    );
+    // Fetch existing availability
+    let availability = await Availability.findOne({ doctor: doctorId });
+
+    if (!availability) {
+      // No previous availability, create new
+      availability = await Availability.create({ doctor: doctorId, days });
+    } else {
+      // Merge: update slots for existing date or add new date
+      days.forEach((newDay) => {
+        const existingDay = availability.days.find((d) => d.date === newDay.date);
+        if (existingDay) {
+          // Merge slots, avoid duplicates
+          existingDay.slots = Array.from(new Set([...existingDay.slots, ...newDay.slots]));
+        } else {
+          // Add new date
+          availability.days.push(newDay);
+        }
+      });
+      await availability.save();
+    }
 
     res.status(200).json({ message: "Availability set", availability });
   } catch (err) {
