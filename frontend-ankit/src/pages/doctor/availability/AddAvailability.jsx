@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import TopIcons from "../../../components/TopIcons";
+import axios from "axios"; // <-- Add this import
 
 const AddAvailability = () => {
   const navigate = useNavigate();
@@ -20,9 +21,34 @@ const AddAvailability = () => {
     );
   };
 
-  const handleConfirm = () => {
-    alert(`Availability added for ${selectedDate}:\n${selectedSlots.join(", ")}`);
-    navigate("/doctor/availability");
+  const handleConfirm = async () => {
+    if (!selectedDate || selectedSlots.length === 0) {
+      alert("Please select a date and at least one slot.");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "https://meetocure.onrender.com/api/availability",
+        {
+          days: [
+            {
+              date: selectedDate,
+              slots: selectedSlots,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert(`Availability added for ${selectedDate}:\n${selectedSlots.join(", ")}`);
+      navigate("/doctor/availability");
+    } catch (err) {
+      alert("Failed to add availability: " + (err.response?.data?.message || err.message));
+    }
   };
 
   return (
