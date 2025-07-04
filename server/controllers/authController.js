@@ -111,6 +111,11 @@ const register = async (req, res) => {
     const existing = await User.findOne({ phone });
     if (existing) return res.status(400).json({ message: "Phone already registered" });
 
+    // Determine if profile is complete (all required fields present)
+    const isProfileComplete =
+      !!name && !!dob && !!gender && !!phone &&
+      (role !== "doctor" || (!!address && !!certificateUrl));
+
     const user = await User.create({
       name,
       dob,
@@ -119,9 +124,23 @@ const register = async (req, res) => {
       address: role === "doctor" ? address : undefined,
       certificateUrl: role === "doctor" ? certificateUrl : undefined,
       role,
+      isProfileComplete,
     });
 
-    res.status(201).json({ message: "User registered. Please login using OTP." });
+    res.status(201).json({
+      message: "User registered. Please login using OTP.",
+      user: {
+        _id: user._id,
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        isProfileComplete: user.isProfileComplete,
+        address: user.address,
+        certificateUrl: user.certificateUrl,
+        dob: user.dob,
+        gender: user.gender,
+      }
+    });
   } catch (err) {
     console.error("Register error:", err);
     res.status(500).json({ message: err.message });

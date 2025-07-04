@@ -3,22 +3,21 @@ const Availability = require("../models/Availability");
 const setAvailability = async (req, res) => {
   try {
     const doctorId = req.user.id;
-    const { days } = req.body; // days is an array with one or more new days
+    const { days } = req.body; 
 
-    // Prevent adding slots for past dates
+    
     const today = new Date().toISOString().slice(0, 10);
     if (days.some(day => day.date < today)) {
       return res.status(400).json({ message: "Cannot add slots for past dates" });
     }
 
-    // Fetch existing availability
+  
     let availability = await Availability.findOne({ doctor: doctorId });
 
     if (!availability) {
-      // No previous availability, create new
       availability = await Availability.create({ doctor: doctorId, days });
     } else {
-      // Merge: update slots for existing date or add new date
+      
       days.forEach((newDay) => {
         const existingDay = availability.days.find((d) => d.date === newDay.date);
         if (existingDay) {

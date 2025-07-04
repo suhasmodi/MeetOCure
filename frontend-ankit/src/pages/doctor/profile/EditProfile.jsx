@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
@@ -15,12 +15,45 @@ import axios from "axios";
 const EditProfile = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "Nutan Sai Nandam",
-    phone: "8639068288",
-    dob: "2003-06-13",
-    gender: "Male",
+    name: "",
+    phone: "",
+    dob: "",
+    gender: "",
     photo: profileImg,
   });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch doctor profile from DB on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(
+          "https://meetocure.onrender.com/api/doctor/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setForm({
+          name: res.data.name || "",
+          phone: res.data.phone || "",
+          dob: res.data.dob || "",
+          gender: res.data.gender || "",
+          photo: res.data.photo || profileImg,
+        });
+      } catch (err) {
+        alert(
+          "Failed to fetch profile: " +
+            (err.response?.data?.message || err.message)
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -52,6 +85,7 @@ const EditProfile = () => {
           phone: form.phone,
           dob: form.dob,
           gender: form.gender,
+          photo: form.photo,
         },
         {
           headers: {
@@ -68,6 +102,14 @@ const EditProfile = () => {
       );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-lg text-gray-500">
+        Loading profile...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FAFC] font-[Poppins] px-6 pt-6 pb-28">
