@@ -14,7 +14,6 @@ const DoctorAvailability = () => {
     const fetchAvailability = async () => {
       try {
         const token = localStorage.getItem("token");
-        // You may need to get the doctorId from user info or backend
         const user = JSON.parse(localStorage.getItem("user"));
         const doctorId = user?._id;
         if (!doctorId) {
@@ -39,18 +38,10 @@ const DoctorAvailability = () => {
     fetchAvailability();
   }, []);
 
-  // Helper to get today's and tomorrow's slots
-  const getSlotsForDay = (offset = 0) => {
-    const dateObj = new Date();
-    dateObj.setDate(dateObj.getDate() + offset);
-    const dateStr = dateObj.toISOString().slice(0, 10); // "YYYY-MM-DD"
-    const found = availability.find((d) => d.date === dateStr);
-    return found ? found.slots : [];
-  };
-
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
+  // Sort availability by date ascending
+  const sortedAvailability = [...availability].sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
 
   return (
     <div className="relative bg-[#F8FAFC] min-h-screen font-[Poppins] px-4 py-6 md:px-10 md:py-10 overflow-hidden">
@@ -68,26 +59,22 @@ const DoctorAvailability = () => {
         <TopIcons />
       </div>
 
-      {/* TODAY & TOMORROW cards vertically stacked */}
+      {/* All Availability Cards */}
       <div className="space-y-8 max-w-3xl mx-auto">
         {loading ? (
           <div className="text-center text-gray-500">Loading...</div>
+        ) : sortedAvailability.length === 0 ? (
+          <div className="text-center text-gray-400">No availability set</div>
         ) : (
-          <>
+          sortedAvailability.map((day) => (
             <AvailabilityCard
-              dayLabel="Today"
-              date={today.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
-              slots={getSlotsForDay(0)}
+              key={day.date}
+              dayLabel={new Date(day.date).toLocaleDateString(undefined, { weekday: "long" })}
+              date={new Date(day.date).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+              slots={day.slots}
               onChange={() => navigate("/doctor/availability/change")}
             />
-
-            <AvailabilityCard
-              dayLabel="Tomorrow"
-              date={tomorrow.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
-              slots={getSlotsForDay(1)}
-              onChange={() => navigate("/doctor/availability/change")}
-            />
-          </>
+          ))
         )}
       </div>
 
