@@ -17,32 +17,44 @@ const getDoctorProfile = async (req, res) =>
     }
 };
 
-const updateDoctorProfile = async (req, res) => 
-    {
-        try 
-        {
-            const doctor = await User.findById(req.user.id);
-            if (!doctor || doctor.role !== "doctor") 
-            {
-                return res.status(404).json({ message: "Doctor not found" });
-            }
+const updateDoctorProfile = async (req, res) => {
+  try {
+    const doctorId = req.user.id;
+    const { name, phone, dob, gender, photo } = req.body;
 
-            const { specialization, experience, phone, age, gender, address } = req.body;
+    // Update the user in the DB
+    const updated = await User.findByIdAndUpdate(
+      doctorId,
+      {
+        name,
+        phone,
+        dob,
+        gender,
+        photo,
+        isProfileComplete: !!(name && phone && dob && gender), // update as per your logic
+      },
+      { new: true }
+    );
 
-            if (specialization) doctor.specialization = specialization;
-            if (experience) doctor.experience = experience;
-            if (phone) doctor.phone = phone;
-            if (age) doctor.age = age;
-            if (gender) doctor.gender = gender;
-            if (address) doctor.address = address;
+    if (!updated) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
 
-            await doctor.save();
-            res.json({ message: "Profile updated successfully" });
-        } 
-        catch (error) 
-        {
-            res.status(500).json({ message: error.message });
-        }
+    res.json({
+      message: "Profile updated",
+      user: {
+        _id: updated._id,
+        name: updated.name,
+        phone: updated.phone,
+        dob: updated.dob,
+        gender: updated.gender,
+        photo: updated.photo,
+        isProfileComplete: updated.isProfileComplete,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 
