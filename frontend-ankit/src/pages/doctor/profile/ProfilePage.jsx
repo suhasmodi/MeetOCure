@@ -15,7 +15,7 @@ import BottomNav from "../../../components/BottomNav";
 import TopIcons from "../../../components/TopIcons";
 import LogoutModal from "../../../components/LogoutModal";
 import profileImg from "/assets/doc_profile.png";
-import { motion } from "framer-motion";
+//import { motion } from "framer-motion";
 import axios from "axios";
 
 const options = [
@@ -57,7 +57,7 @@ const ProfilePage = () => {
         setDoctorName(res.data.name || "");
         setDoctorPhone(res.data.phone || "");
         if (res.data.photo) setProfileImage(res.data.photo);
-      } catch (err) {
+      } catch {
         // fallback: keep localStorage image and show empty name/phone
       }
     };
