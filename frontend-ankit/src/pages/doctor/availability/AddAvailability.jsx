@@ -69,6 +69,7 @@ const AddAvailability = () => {
       <input
         type="date"
         value={selectedDate}
+        min={new Date().toISOString().slice(0, 10)}
         onChange={(e) => setSelectedDate(e.target.value)}
         className="mb-6 w-full max-w-xs p-2 border border-gray-300 rounded-md shadow-sm focus:outline-[#0A4D68]"
       />

@@ -9,4 +9,6 @@ router.post("/", protect("doctor"), setAvailability);
 // Patient can fetch doctor’s availability
 router.get("/:doctorId", getAvailability);
 
+router.delete("/:date", authMiddleware, availabilityController.deleteAvailabilityDate);
+
 module.exports = router;

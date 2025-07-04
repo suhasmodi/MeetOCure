@@ -43,6 +43,24 @@ const DoctorAvailability = () => {
     a.date.localeCompare(b.date)
   );
 
+  // Add this function inside your DoctorAvailability component
+  const handleDeleteDate = async (date) => {
+    if (!window.confirm(`Are you sure you want to delete all slots for ${date}?`))
+      return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `https://meetocure.onrender.com/api/availability/${date}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setAvailability((prev) => prev.filter((d) => d.date !== date));
+    } catch (err) {
+      alert("Failed to delete: " + (err.response?.data?.message || err.message));
+    }
+  };
+
   return (
     <div className="relative bg-[#F8FAFC] min-h-screen font-[Poppins] px-4 py-6 md:px-10 md:py-10 overflow-hidden">
       {/* Background Gradient Accent */}
@@ -73,6 +91,7 @@ const DoctorAvailability = () => {
               date={new Date(day.date).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
               slots={day.slots}
               onChange={() => navigate("/doctor/availability/change")}
+              onDelete={() => handleDeleteDate(day.date)}
             />
           ))
         )}
@@ -96,7 +115,7 @@ const DoctorAvailability = () => {
   );
 };
 
-const AvailabilityCard = ({ dayLabel, date, slots, onChange }) => (
+const AvailabilityCard = ({ dayLabel, date, slots, onChange, onDelete }) => (
   <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all hover:-translate-y-1 duration-300">
     <h2 className="text-lg font-bold text-[#1F2A37] mb-2">{dayLabel}</h2>
     <hr className="mb-4" />
@@ -124,7 +143,10 @@ const AvailabilityCard = ({ dayLabel, date, slots, onChange }) => (
 
     {/* Action Buttons */}
     <div className="flex gap-4">
-      <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-full font-semibold hover:bg-gray-200 transition">
+      <button
+        onClick={onDelete}
+        className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-full font-semibold hover:bg-gray-200 transition"
+      >
         Delete
       </button>
       <button
