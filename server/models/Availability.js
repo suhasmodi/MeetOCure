@@ -10,8 +10,8 @@ const availabilitySchema = new mongoose.Schema(
     },
     days: [
       {
-        date: { type: String, required: true }, // e.g., "2025-06-13"
-        slots: [String] // e.g., ["9:00 AM", "9:30 AM"]
+        date: { type: String, required: true }, // "2025-06-13"
+        slots: [String] // ["9:00 AM", "9:30 AM"]
       }
     ]
   },

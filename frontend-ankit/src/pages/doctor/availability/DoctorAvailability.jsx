@@ -1,11 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaCalendarAlt, FaClock, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "../../../components/BottomNav";
 import TopIcons from "../../../components/TopIcons";
+import axios from "axios";
 
 const DoctorAvailability = () => {
   const navigate = useNavigate();
+  const [availability, setAvailability] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        // You may need to get the doctorId from user info or backend
+        const user = JSON.parse(localStorage.getItem("user"));
+        const doctorId = user?._id;
+        if (!doctorId) {
+          setLoading(false);
+          return;
+        }
+        const res = await axios.get(
+          `https://meetocure.onrender.com/api/availability/${doctorId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAvailability(res.data.days || []);
+      } catch {
+        setAvailability([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAvailability();
+  }, []);
+
+  // Helper to get today's and tomorrow's slots
+  const getSlotsForDay = (offset = 0) => {
+    const dateObj = new Date();
+    dateObj.setDate(dateObj.getDate() + offset);
+    const dateStr = dateObj.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const found = availability.find((d) => d.date === dateStr);
+    return found ? found.slots : [];
+  };
+
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
   return (
     <div className="relative bg-[#F8FAFC] min-h-screen font-[Poppins] px-4 py-6 md:px-10 md:py-10 overflow-hidden">
@@ -25,29 +70,25 @@ const DoctorAvailability = () => {
 
       {/* TODAY & TOMORROW cards vertically stacked */}
       <div className="space-y-8 max-w-3xl mx-auto">
-        <AvailabilityCard
-          dayLabel="Today"
-          date="June 13, 2025"
-          slots={[
-            "10:00 AM – 10:30 AM",
-            "10:30 AM – 11:00 AM",
-            "11:00 AM – 11:30 AM",
-            "11:30 AM – 12:00 AM",
-            "12:00 AM – 12:30 AM"
-          ]}
-          onChange={() => navigate("/doctor/availability/change")}
-        />
+        {loading ? (
+          <div className="text-center text-gray-500">Loading...</div>
+        ) : (
+          <>
+            <AvailabilityCard
+              dayLabel="Today"
+              date={today.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+              slots={getSlotsForDay(0)}
+              onChange={() => navigate("/doctor/availability/change")}
+            />
 
-        <AvailabilityCard
-          dayLabel="Tomorrow"
-          date="June 14, 2025"
-          slots={[
-            "10:00 AM – 10:30 AM",
-            "10:30 AM – 11:00 AM",
-            "12:00 AM – 12:30 AM"
-          ]}
-          onChange={() => navigate("/doctor/availability/change")}
-        />
+            <AvailabilityCard
+              dayLabel="Tomorrow"
+              date={tomorrow.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+              slots={getSlotsForDay(1)}
+              onChange={() => navigate("/doctor/availability/change")}
+            />
+          </>
+        )}
       </div>
 
       {/* Floating Add Button */}
@@ -79,15 +120,19 @@ const AvailabilityCard = ({ dayLabel, date, slots, onChange }) => (
 
     {/* Slot Chips */}
     <div className="flex flex-wrap gap-3 text-sm mb-6">
-      {slots.map((slot, idx) => (
-        <div
-          key={idx}
-          className="flex items-center gap-1 bg-[#E0F2F1] text-[#0A4D68] px-4 py-2 rounded-full text-sm font-medium shadow-sm transition-transform duration-200 hover:scale-105"
-        >
-          <FaClock className="text-sm" />
-          {slot}
-        </div>
-      ))}
+      {slots.length === 0 ? (
+        <span className="text-gray-400">No slots set</span>
+      ) : (
+        slots.map((slot, idx) => (
+          <div
+            key={idx}
+            className="flex items-center gap-1 bg-[#E0F2F1] text-[#0A4D68] px-4 py-2 rounded-full text-sm font-medium shadow-sm transition-transform duration-200 hover:scale-105"
+          >
+            <FaClock className="text-sm" />
+            {slot}
+          </div>
+        ))
+      )}
     </div>
 
     {/* Action Buttons */}
