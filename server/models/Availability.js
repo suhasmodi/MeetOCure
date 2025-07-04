@@ -1,32 +1,21 @@
 const mongoose = require("mongoose");
 
-const slotSchema = new mongoose.Schema(
-{
-  startTime: { type: String, required: true }, 
-  endTime: { type: String, required: true },   
-});
-
 const availabilitySchema = new mongoose.Schema(
-{
-  doctor: 
   {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-    unique: true
-  },
-  days: 
-  [
-    {
-      day: 
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true
+    },
+    days: [
       {
-        type: String,
-        enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        required: true
-      },
-      slots: [slotSchema] 
-    }
-  ]
-}, { timestamps: true });
+        date: { type: String, required: true }, // e.g., "2025-06-13"
+        slots: [String] // e.g., ["9:00 AM", "9:30 AM"]
+      }
+    ]
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Availability", availabilitySchema);
