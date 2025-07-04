@@ -22,8 +22,8 @@ const setAvailability = async (req, res) => {
       days.forEach((newDay) => {
         const existingDay = availability.days.find((d) => d.date === newDay.date);
         if (existingDay) {
-          // Merge slots, avoid duplicates
-          existingDay.slots = Array.from(new Set([...existingDay.slots, ...newDay.slots]));
+          // Overwrite slots for this date
+          existingDay.slots = newDay.slots;
         } else {
           // Add new date
           availability.days.push(newDay);

@@ -6,7 +6,7 @@ import axios from "axios"; // <-- Add this import
 
 const AddAvailability = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState("2025-06-13");
+  const [selectedDate, setSelectedDate] = useState("YYYY-MM-DD");
   const [selectedSlots, setSelectedSlots] = useState([]);
 
   const allSlots = [

@@ -13,7 +13,7 @@ const timeSlots = [
 
 const ChangeAvailability = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState("2025-03-13");
+  const [selectedDate, setSelectedDate] = useState("YYYY-MM-DD");
   const [selectedSlots, setSelectedSlots] = useState([]);
 
   const toggleSlot = (slot) => {
