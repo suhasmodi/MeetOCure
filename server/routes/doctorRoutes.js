@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const protect = require("../middleware/authMiddleware");
+const doctorController = require("../controllers/doctorController");
 
 const {
   getDoctorProfile,
@@ -11,7 +12,7 @@ const {
 
 router.get("/profile", protect(["doctor"]), getDoctorProfile);
 
-router.put("/profile", protect(["doctor"]), updateDoctorProfile);
+router.put("/profile", protect("doctor"), doctorController.updateDoctorProfile);
 
 router.get("/", protect(["patient"]), getFilteredDoctors);
 
