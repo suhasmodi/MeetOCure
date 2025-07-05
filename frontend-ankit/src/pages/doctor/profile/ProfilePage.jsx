@@ -57,6 +57,31 @@ const ProfilePage = () => {
     }
   };
 
+  const [doctorInfo, setDoctorInfo] = useState({ name: "", phone: "" });
+
+useEffect(() => {
+  const fetchDoctorInfo = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("https://meetocure.onrender.com/api/doctor/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      setDoctorInfo({
+        name: data.name,
+        phone: data.phone,
+      });
+    } catch (error) {
+      console.error("Failed to fetch doctor info:", error);
+    }
+  };
+
+  fetchDoctorInfo();
+}, []);
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0F4F8] to-[#E9F1F8] font-[Poppins] pb-24 md:pb-10">
       {/* Header */}
@@ -94,9 +119,13 @@ const ProfilePage = () => {
             />
           </label>
         </div>
-        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">Nutan Sai Nandam</h2>
-        <p className="text-[#6B7280] mb-6">+91 8639068288</p>
-      </motion.div>
+        <h2 className="text-xl font-semibold text-[#0A4D68] mb-1">
+          {doctorInfo.name || "Loading..."}
+        </h2>
+        <p className="text-[#6B7280] mb-6">
+          {doctorInfo.phone ? `+91 ${doctorInfo.phone}` : "Loading..."}
+        </p>
+  </motion.div>
 
       {/* Profile Options */}
       <div className="max-w-3xl mx-auto px-6 mt-10 space-y-4">
