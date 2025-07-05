@@ -16,10 +16,8 @@ const DoctorAppointmentsPage = () => {
     const fetchAppointments = async () => {
       try {
         const token = localStorage.getItem("token");
-        const user = JSON.parse(localStorage.getItem("user"));
-        const doctorId = user?._id;
         const res = await axios.get(
-          `https://meetocure.onrender.com/api/appointments/doctor/${doctorId}`,
++         "https://meetocure.onrender.com/api/appointments/doctor",
           {
             headers: {
               Authorization: `Bearer ${token}`,
