@@ -37,15 +37,9 @@ const bookAppointment = async (req, res) => {
 
 // Doctor views all appointment requests
 const getDoctorAppointments = async (req, res) => {
-  try {
-    const appointments = await Appointment.find({ doctor: req.user.id })
-      .populate("patient", "name email")
-      .sort({ date: 1 });
-
-    res.json(appointments);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  const doctorId = req.params.doctorId;
+  const appointments = await Appointment.find({ doctor: doctorId });
+  res.json(appointments);
 };
 
 // Doctor updates appointment status
