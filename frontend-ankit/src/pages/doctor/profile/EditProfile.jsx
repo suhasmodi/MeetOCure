@@ -36,22 +36,10 @@ const EditProfile = () => {
             },
           }
         );
-        // Format dob to yyyy-mm-dd for input, but keep original for display
-        let dob = res.data.dob || "";
-        if (dob) {
-          // If dob is already yyyy-mm-dd, keep it, else convert
-          if (dob.includes("-") && dob.length === 10) {
-            // Already in correct format
-          } else {
-            // Try to parse and format
-            const d = new Date(dob);
-            dob = d.toISOString().slice(0, 10);
-          }
-        }
         setForm({
           name: res.data.name || "",
           phone: res.data.phone || "",
-          dob: dob,
+          dob: res.data.dob || "",
           gender: res.data.gender || "",
           photo: res.data.photo || profileImg,
         });
