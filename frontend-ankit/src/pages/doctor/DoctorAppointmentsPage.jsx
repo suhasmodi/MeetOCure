@@ -26,7 +26,9 @@ const DoctorAppointmentsPage = () => {
             },
           }
         );
-        setAppointments(res.data || []);
+        setAppointments(
+          Array.isArray(res.data) ? res.data : res.data.appointments || []
+        );
       } catch {
         setAppointments([]);
       } finally {

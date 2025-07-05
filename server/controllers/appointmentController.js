@@ -39,7 +39,7 @@ const bookAppointment = async (req, res) => {
 const getDoctorAppointments = async (req, res) => {
   const doctorId = req.params.doctorId;
   const appointments = await Appointment.find({ doctor: doctorId });
-  res.json(appointments);
+  res.json({ appointments });
 };
 
 // Doctor updates appointment status
