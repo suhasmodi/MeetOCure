@@ -1,76 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import AppointmentTabs from "../../components/AppointmentTabs";
 import AppointmentCard from "../../components/AppointmentCard";
 import TopIcons from "../../components/TopIcons";
-
-const allAppointments = [
-  {
-    id: 1,
-    name: "Nithin Sai",
-    age: 22,
-    gender: "Male",
-    phone: "+91 8630968288",
-    date: "June 13, 2025",
-    time: "11.00 AM",
-    photo: "/assets/patient/nithin.png",
-    status: "Upcoming",
-    concern: "Fever and Cough",
-  },
-  {
-    id: 2,
-    name: "Manideep",
-    age: 30,
-    gender: "Male",
-    phone: "+91 9390481522",
-    date: "June 13, 2025",
-    time: "11.30 AM",
-    photo: "/assets/patient/manideep.png",
-    status: "Upcoming",
-    concern: "Headache",
-  },
-  {
-    id: 3,
-    name: "Rishik",
-    age: 21,
-    gender: "Male",
-    phone: "+91 8465871402",
-    date: "June 13, 2025",
-    time: "10.00 AM",
-    photo: "/assets/patient/rishik.png",
-    status: "Completed",
-  },
-  {
-    id: 4,
-    name: "Purnima",
-    age: 25,
-    gender: "Female",
-    phone: "+91 7032835465",
-    date: "June 13, 2025",
-    time: "9.30 AM",
-    photo: "/assets/patient/purnima.png",
-    status: "Completed",
-  },
-  {
-    id: 5,
-    name: "Keerthi Sree",
-    age: 19,
-    gender: "Female",
-    phone: "+91 6281073365",
-    date: "June 13, 2025",
-    time: "10.00 AM",
-    photo: "/assets/patient/keerthi.png",
-    status: "Cancelled",
-  },
-];
+import axios from "axios";
 
 const DoctorAppointmentsPage = () => {
   const [selectedTab, setSelectedTab] = useState("Upcoming");
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const filteredAppointments = allAppointments.filter(
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+        const doctorId = user?._id;
+        const res = await axios.get(
+          `https://meetocure.onrender.com/api/appointments/doctor/${doctorId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAppointments(res.data || []);
+      } catch (err) {
+        setAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAppointments();
+  }, []);
+
+  const filteredAppointments = appointments.filter(
     (appt) => appt.status === selectedTab
   );
 
@@ -95,17 +62,20 @@ const DoctorAppointmentsPage = () => {
 
       {/* Appointment Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-        {filteredAppointments.map((appt) => (
-          <AppointmentCard
-            key={appt.id}
-            appt={appt}
-            onView={(p) => setSelectedPatient(p)}
-          />
-        ))}
-        {filteredAppointments.length === 0 && (
+        {loading ? (
+          <p className="text-center text-gray-400 text-sm mt-10">Loading...</p>
+        ) : filteredAppointments.length === 0 ? (
           <p className="text-center text-gray-400 text-sm mt-10">
             No appointments in this category.
           </p>
+        ) : (
+          filteredAppointments.map((appt) => (
+            <AppointmentCard
+              key={appt._id}
+              appt={appt}
+              onView={(p) => setSelectedPatient(p)}
+            />
+          ))
         )}
       </section>
     </div>
