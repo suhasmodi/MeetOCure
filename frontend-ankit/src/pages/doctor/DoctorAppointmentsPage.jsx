@@ -8,7 +8,6 @@ import axios from "axios";
 
 const DoctorAppointmentsPage = () => {
   const [selectedTab, setSelectedTab] = useState("Upcoming");
-  const [selectedPatient, setSelectedPatient] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ const DoctorAppointmentsPage = () => {
           }
         );
         setAppointments(res.data || []);
-      } catch (err) {
+      } catch {
         setAppointments([]);
       } finally {
         setLoading(false);
@@ -73,7 +72,6 @@ const DoctorAppointmentsPage = () => {
             <AppointmentCard
               key={appt._id}
               appt={appt}
-              onView={(p) => setSelectedPatient(p)}
             />
           ))
         )}
