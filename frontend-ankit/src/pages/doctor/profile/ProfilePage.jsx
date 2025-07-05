@@ -15,7 +15,7 @@ import BottomNav from "../../../components/BottomNav";
 import TopIcons from "../../../components/TopIcons";
 import LogoutModal from "../../../components/LogoutModal";
 import profileImg from "/assets/doc_profile.png";
-
+import { motion } from "framer-motion";
 
 const options = [
   { icon: <FaUserEdit />, label: "Edit Profile", path: "/doctor/profile/edit" },
