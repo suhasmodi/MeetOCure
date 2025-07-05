@@ -37,10 +37,18 @@ const bookAppointment = async (req, res) => {
 
 // Doctor views all appointment requests
 const getDoctorAppointments = async (req, res) => {
-  const doctorId = req.params.doctorId;
-  const appointments = await Appointment.find({ doctor: doctorId });
-  res.json({ appointments });
+  try {
+    const doctorId = req.user.id; // Use authenticated doctor's ID
+    const appointments = await Appointment.find({ doctor: doctorId })
+      .populate("patient", "name gender age")
+      .sort({ date: 1 });
+
+    res.json(appointments); // No need to wrap in { appointments } unless you're consistent
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
+
 
 // Doctor updates appointment status
 const updateAppointmentStatus = async (req, res) => {
