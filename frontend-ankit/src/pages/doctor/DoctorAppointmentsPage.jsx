@@ -13,28 +13,30 @@ const DoctorAppointmentsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(
-+         "https://meetocure.onrender.com/api/appointments/doctor",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setAppointments(
-          Array.isArray(res.data) ? res.data : res.data.appointments || []
-        );
-      } catch {
-        setAppointments([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAppointments();
-  }, []);
+  const fetchAppointments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        "https://meetocure.onrender.com/api/appointments/doctor",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setAppointments(res.data || []);
+    } catch (err) {
+      console.error("Failed to fetch appointments:", err);
+      setAppointments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAppointments();
+}, []);
 
   const filteredAppointments = appointments.filter(
     (appt) => appt.status === selectedTab
