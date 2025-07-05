@@ -39,7 +39,7 @@ const DoctorAppointmentsPage = () => {
   }, []);
 
   const filteredAppointments = appointments.filter(
-    (appt) => appt.status === selectedTab
+    (appt) => appt.status?.toLowerCase() === selectedTab.toLowerCase()
   );
 
   return (
