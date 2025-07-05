@@ -6,6 +6,14 @@ import AppointmentCard from "../../components/AppointmentCard";
 import TopIcons from "../../components/TopIcons";
 import axios from "axios";
 
+// Helper to calculate age from DOB
+const calculateAge = (dob) => {
+  if (!dob) return "-";
+  const birthDate = new Date(dob);
+  const ageDiff = Date.now() - birthDate.getTime();
+  return Math.floor(ageDiff / (1000 * 60 * 60 * 24 * 365.25));
+};
+
 const DoctorAppointmentsPage = () => {
   const [selectedTab, setSelectedTab] = useState("Upcoming");
   const [appointments, setAppointments] = useState([]);
@@ -13,30 +21,35 @@ const DoctorAppointmentsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchAppointments = async () => {
-    try {
-      const token = localStorage.getItem("token");
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-      const res = await axios.get(
-        "https://meetocure.onrender.com/api/appointments/doctor",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        const res = await axios.get(
+          "https://meetocure.onrender.com/api/appointments/doctor",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setAppointments(res.data || []);
-    } catch (err) {
-      console.error("Failed to fetch appointments:", err);
-      setAppointments([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+        const enrichedAppointments = (res.data || []).map((appt) => ({
+          ...appt,
+          patientAge: calculateAge(appt.patient?.dob),
+        }));
 
-  fetchAppointments();
-}, []);
+        setAppointments(enrichedAppointments);
+      } catch (err) {
+        console.error("Failed to fetch appointments:", err);
+        setAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
 
   const filteredAppointments = appointments.filter(
     (appt) => appt.status === selectedTab
@@ -71,10 +84,7 @@ const DoctorAppointmentsPage = () => {
           </p>
         ) : (
           filteredAppointments.map((appt) => (
-            <AppointmentCard
-              key={appt._id}
-              appt={appt}
-            />
+            <AppointmentCard key={appt._id} appt={appt} />
           ))
         )}
       </section>

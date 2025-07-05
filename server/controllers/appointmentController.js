@@ -40,7 +40,7 @@ const getDoctorAppointments = async (req, res) => {
   try {
     const doctorId = req.user.id; // Use authenticated doctor's ID
     const appointments = await Appointment.find({ doctor: doctorId })
-      .populate("patient", "name gender age")
+      .populate("patient", "name gender dob")
       .sort({ date: 1 });
 
     res.json(appointments); // No need to wrap in { appointments } unless you're consistent
