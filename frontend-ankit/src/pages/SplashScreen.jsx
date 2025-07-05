@@ -31,11 +31,22 @@ const SplashScreen = () => {
     }
   }, [currentIndex, navigate]);
 
+  const handleSkip = () => {
+    navigate("/choose-role");
+  };
+
   return (
-    <div className="min-h-screen flex font-[Poppins] bg-gradient-to-br from-[#F9FCFF] to-[#E6F1F9]">
+    <div className="min-h-screen flex font-[Poppins] bg-gradient-to-br from-[#F9FCFF] to-[#E6F1F9] relative">
+      {/* Skip Button */}
+      <button
+        onClick={handleSkip}
+        className="absolute bottom-4 right-4 px-4 py-2 bg-[#0A4D68] text-white text-sm rounded-full shadow-md hover:bg-[#08374f] transition"
+      >
+        Skip
+      </button>
+
       {/* Left Panel: Branding */}
       <div className="hidden md:flex w-1/2 flex-col justify-center items-center px-10 bg-[#0A4D68] text-white relative">
-        {/* Logo inside white circle */}
         <div className="w-36 h-36 rounded-full bg-white flex items-center justify-center shadow-2xl mb-6">
           <img
             src="/assets/logo.png"
@@ -43,18 +54,12 @@ const SplashScreen = () => {
             className="w-24 h-24 object-contain"
           />
         </div>
-
-        {/* App Name */}
         <h1 className="text-5xl font-extrabold tracking-tight mb-4 text-white">
           MeetoCure
         </h1>
-
-        {/* Tagline */}
         <p className="text-lg text-[#E0F7FA] max-w-md text-center">
           Your Digital Healthcare Companion.
         </p>
-
-        {/* Decorative separator */}
         <div className="mt-6 w-24 h-1 bg-[#4FBDBA] rounded-full animate-pulse" />
       </div>
 
