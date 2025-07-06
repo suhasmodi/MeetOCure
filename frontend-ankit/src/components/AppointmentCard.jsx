@@ -1,71 +1,83 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    FaCalendarAlt,
-    FaClock,
-    FaUser,
-    FaVenusMars,
-    FaPhone,
+  FaCalendarAlt,
+  FaClock,
+  FaUser,
+  FaVenusMars,
+  FaPhone,
 } from "react-icons/fa";
 
-const AppointmentCard = ({ appt, onView }) => {
-    const navigate = useNavigate();
-    return (
-        <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 w-full">
-            {/* Date & Time */}
-            <div className="flex justify-between items-center text-[#0A4D68] font-medium text-sm mb-4">
-                <div className="flex items-center gap-2">
-                    <FaCalendarAlt className="text-base" />
-                    <span>{appt.date}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <FaClock className="text-base" />
-                    <span>{appt.time}</span>
-                </div>
-            </div>
+// Helper: Calculate age from DOB
+const calculateAge = (dob) => {
+  if (!dob) return "-";
+  const birthDate = new Date(dob);
+  const ageDiff = Date.now() - birthDate.getTime();
+  return Math.floor(ageDiff / (1000 * 60 * 60 * 24 * 365.25));
+};
 
-            {/* Patient Info */}
-            <div className="flex gap-6 items-start bg-[#F9FAFB] rounded-xl p-4 shadow-sm mb-5">
-                <img
-                    src={appt.photo}
-                    alt={appt.name}
-                    className="w-20 h-20 rounded-xl object-cover border shadow-sm"
-                />
-                <div className="flex-1 text-sm text-[#1F2A37]">
-                    <p className="font-semibold text-lg mb-1">{appt.name}</p>
-                    <div className="space-y-1 text-gray-600">
-                        <p className="flex items-center gap-2">
-                            <FaUser className="text-[#0A4D68]" />
-                            Age: {appt.age}
-                        </p>
-                        <p className="flex items-center gap-2">
-                            <FaVenusMars className="text-[#0A4D68]" />
-                            Gender: {appt.gender}
-                        </p>
-                        <p className="flex items-center gap-2">
-                            <FaPhone className="text-[#0A4D68]" />
-                            {appt.phone}
-                        </p>
-                    </div>
-                </div>
-            </div>
+const AppointmentCard = ({ appt }) => {
+  const navigate = useNavigate();
 
-            {/* Buttons */}
-            <div className="flex gap-5">
-                <button className="w-full bg-gray-100 hover:bg-gray-200 text-sm py-2.5 rounded-full font-medium transition">
-                    Cancel
-                </button>
-                <button
-                    onClick={() =>
-                        navigate(`/doctor/patient/${appt.id}`, { state: { patient: appt } })
-                    }
-                    className="w-full bg-[#0A4D68] hover:bg-[#083e54] text-white text-sm py-2.5 rounded-full font-medium transition"
-                >
-                    View more
-                </button>
-            </div>
+  const patient = appt.patient || {};
+  const age = calculateAge(patient.dob);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 w-full">
+      {/* Date & Time */}
+      <div className="flex justify-between items-center text-[#0A4D68] font-medium text-sm mb-4">
+        <div className="flex items-center gap-2">
+          <FaCalendarAlt className="text-base" />
+          <span>{new Date(appt.date).toLocaleDateString()}</span>
         </div>
-    );
+        <div className="flex items-center gap-2">
+          <FaClock className="text-base" />
+          <span>{appt.time}</span>
+        </div>
+      </div>
+
+      {/* Patient Info */}
+      <div className="flex gap-6 items-start bg-[#F9FAFB] rounded-xl p-4 shadow-sm mb-5">
+        <img
+          src={patient.photo || "/assets/patient_default.png"} // fallback image
+          alt={patient.name || "Patient"}
+          className="w-20 h-20 rounded-xl object-cover border shadow-sm"
+        />
+        <div className="flex-1 text-sm text-[#1F2A37]">
+          <p className="font-semibold text-lg mb-1">{patient.name || "Unknown"}</p>
+          <div className="space-y-1 text-gray-600">
+            <p className="flex items-center gap-2">
+              <FaUser className="text-[#0A4D68]" />
+              Age: {age}
+            </p>
+            <p className="flex items-center gap-2">
+              <FaVenusMars className="text-[#0A4D68]" />
+              Gender: {patient.gender || "-"}
+            </p>
+            <p className="flex items-center gap-2">
+              <FaPhone className="text-[#0A4D68]" />
+              {patient.phone || "-"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div className="flex gap-5">
+        <button className="w-full bg-gray-100 hover:bg-gray-200 text-sm py-2.5 rounded-full font-medium transition">
+          Cancel
+        </button>
+        <button
+          onClick={() =>
+            navigate(`/doctor/patient/${patient._id}`, { state: { patient } })
+          }
+          className="w-full bg-[#0A4D68] hover:bg-[#083e54] text-white text-sm py-2.5 rounded-full font-medium transition"
+        >
+          View more
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default AppointmentCard;
