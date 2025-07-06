@@ -75,7 +75,6 @@ const DoctorPatientDetailsPage = () => {
           <FaCalendarAlt className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Date</p>
           <p className="text-lg font-semibold">{new Date(appt.date).toLocaleDateString()}
-            {appt.date}
           </p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow">
