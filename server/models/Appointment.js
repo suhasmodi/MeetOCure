@@ -19,6 +19,7 @@ const appointmentSchema = new mongoose.Schema(
       name: { type: String, required: true },
       gender: { type: String, enum: ["male", "female", "other"], required: true },
       age: { type: Number, required: true },
+      phone: { type: String, required:true },  // e.g. "+91 XXXXXXXX"
       note: { type: String, default: "" },  // e.g. “Diabetic, allergic to penicillin”
     },
 
