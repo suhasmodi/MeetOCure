@@ -12,29 +12,18 @@ import {
 } from "react-icons/fa";
 import TopIcons from "../../components/TopIcons";
 
-// Helper: Calculate age from DOB
-const calculateAge = (dob) => {
-  if (!dob) return "-";
-  const birthDate = new Date(dob);
-  const ageDiff = Date.now() - birthDate.getTime();
-  return Math.floor(ageDiff / (1000 * 60 * 60 * 24 * 365.25));
-};
-
 const DoctorPatientDetailsPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const appointment = state?.appointment;
-  const patient = appointment?.patient;
+  const patient = state?.patient;
 
-  if (!appointment || !patient) {
+  if (!patient) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-500 text-lg">
-        No patient or appointment data available.
+        No patient data available.
       </div>
     );
   }
-
-  const age = calculateAge(patient.dob);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F9FAFC] to-[#EFF5F9] font-poppins text-[#1F2A37] px-6 py-8">
@@ -64,11 +53,12 @@ const DoctorPatientDetailsPage = () => {
           </p>
           <div className="text-base text-gray-600 space-y-1">
             <p>
-              <FaUser className="inline mr-2 text-[#0A4D68]" /> Age: {age}
+              <FaUser className="inline mr-2 text-[#0A4D68]" /> Age:{" "}
+              {patient.age}
             </p>
             <p>
               <FaVenusMars className="inline mr-2 text-[#0A4D68]" /> Gender:{" "}
-              {patient.gender || "-"}
+              {patient.gender}
             </p>
             <p>
               <FaPhone className="inline mr-2 text-[#0A4D68]" /> Phone:{" "}
@@ -83,14 +73,12 @@ const DoctorPatientDetailsPage = () => {
         <div className="bg-white p-6 rounded-xl shadow">
           <FaCalendarAlt className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Date</p>
-          <p className="text-lg font-semibold">
-            {new Date(appointment.date).toLocaleDateString()}
-          </p>
+          <p className="text-lg font-semibold">{patient.date}</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow">
           <FaClock className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Time</p>
-          <p className="text-lg font-semibold">{appointment.time}</p>
+          <p className="text-lg font-semibold">{patient.time}</p>
         </div>
       </div>
 
@@ -100,9 +88,10 @@ const DoctorPatientDetailsPage = () => {
           About Patient
         </h2>
         <p className="text-base leading-relaxed text-gray-700 bg-white p-6 rounded-xl shadow">
-          {patient.name} is a {age}-year-old {patient.gender} seeking
-          consultation. Doctor can add notes or medical history here in the
-          future.
+          {patient.name} is a {patient.age}-year-old {patient.gender} currently
+          seeking medical consultation. Additional notes can be added here by
+          the doctor. This section may later include medical history,
+          allergies, or remarks.
         </p>
       </section>
 
