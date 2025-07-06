@@ -16,9 +16,9 @@ const DoctorPatientDetailsPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const appt = state?.appt;
-const patient = appt?.patientInfo;
+  const patient = appt?.patientInfo;
 
-  if (!patient) {
+  if (!appt || !patient) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-500 text-lg">
         No patient data available.

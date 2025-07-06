@@ -62,9 +62,7 @@ const AppointmentCard = ({ appt }) => {
         </button>
         <button
           onClick={() =>
-            navigate(`/doctor/patient/${appt.patient}`, {
-              state: { patient: patient },
-            })
+            navigate(`/doctor/patient/${appt._id}`, { state: { appt } })
           }
           className="w-full bg-[#0A4D68] hover:bg-[#083e54] text-white text-sm py-2.5 rounded-full font-medium transition"
         >
