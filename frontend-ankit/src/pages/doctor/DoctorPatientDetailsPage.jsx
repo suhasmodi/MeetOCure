@@ -15,7 +15,8 @@ import TopIcons from "../../components/TopIcons";
 const DoctorPatientDetailsPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const patient = state?.patient;
+  const appt = state?.appt;
+const patient = appt?.patientInfo;
 
   if (!patient) {
     return (
@@ -73,12 +74,12 @@ const DoctorPatientDetailsPage = () => {
         <div className="bg-white p-6 rounded-xl shadow">
           <FaCalendarAlt className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Date</p>
-          <p className="text-lg font-semibold">{patient.date}</p>
+          <p className="text-lg font-semibold">{appt.date}</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow">
           <FaClock className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Time</p>
-          <p className="text-lg font-semibold">{patient.time}</p>
+          <p className="text-lg font-semibold">{appt.time}</p>
         </div>
       </div>
 
