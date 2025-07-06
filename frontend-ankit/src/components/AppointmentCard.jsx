@@ -8,19 +8,12 @@ import {
   FaPhone,
 } from "react-icons/fa";
 
-// Helper: Calculate age from DOB
-const calculateAge = (dob) => {
-  if (!dob) return "-";
-  const birthDate = new Date(dob);
-  const ageDiff = Date.now() - birthDate.getTime();
-  return Math.floor(ageDiff / (1000 * 60 * 60 * 24 * 365.25));
-};
 
 const AppointmentCard = ({ appt }) => {
   const navigate = useNavigate();
 
-  const patient = appt.patient || {};
-  const age = calculateAge(appt.dob);
+  const patient = appt.patientInfo || {};
+  const age = patient.age || "-";
 
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 w-full">
@@ -39,7 +32,7 @@ const AppointmentCard = ({ appt }) => {
       {/* Patient Info */}
       <div className="flex gap-6 items-start bg-[#F9FAFB] rounded-xl p-4 shadow-sm mb-5">
         <img
-          src={patient.photo || "/assets/patient_default.png"} // fallback image
+          src={"/assets/patient_default.png"} // Optional: store photo separately if needed
           alt={patient.name || "Patient"}
           className="w-20 h-20 rounded-xl object-cover border shadow-sm"
         />
@@ -56,7 +49,7 @@ const AppointmentCard = ({ appt }) => {
             </p>
             <p className="flex items-center gap-2">
               <FaPhone className="text-[#0A4D68]" />
-              {patient.phone || "-"}
+              -
             </p>
           </div>
         </div>
@@ -69,7 +62,9 @@ const AppointmentCard = ({ appt }) => {
         </button>
         <button
           onClick={() =>
-            navigate(`/doctor/patient/${patient._id}`, { state: { patient } })
+            navigate(`/doctor/patient/${appt.patient}`, {
+              state: { patient: patient },
+            })
           }
           className="w-full bg-[#0A4D68] hover:bg-[#083e54] text-white text-sm py-2.5 rounded-full font-medium transition"
         >
@@ -79,5 +74,6 @@ const AppointmentCard = ({ appt }) => {
     </div>
   );
 };
+
 
 export default AppointmentCard;
