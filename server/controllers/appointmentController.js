@@ -14,13 +14,25 @@ const bookAppointment = async (req, res) => {
     }
 
     // Create new appointment
+    const patientDoc = await User.findById(req.user.id).select("name gender dob");
+    const age = Math.floor(
+      (Date.now() - new Date(patientDoc.dob).getTime()) /
+      (1000 * 60 * 60 * 24 * 365.25)
+    );
+
     const appointment = new Appointment({
       patient: req.user.id,
       doctor: doctorId,
       date,
       time,
       reason,
-      status: "pending",
+      status: "Upcoming",
+      patientInfo: {
+        name: patientDoc.name,
+        gender: patientDoc.gender,
+        age,
+        note: "Short medical note here" // or leave blank
+      }
     });
 
     await appointment.save();

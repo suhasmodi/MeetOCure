@@ -2,39 +2,35 @@ const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema(
   {
-    patient: 
-    {
+    // References
+    patient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    doctor: 
-    {
+    doctor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    date: 
-    {
-      type: Date,
-      required: true,
+
+    // Embedded snapshot of patient data
+    patientInfo: {
+      name: { type: String, required: true },
+      gender: { type: String, enum: ["male", "female", "other"], required: true },
+      age: { type: Number, required: true },
+      note: { type: String, default: "" },  // e.g. “Diabetic, allergic to penicillin”
     },
-    time: 
-    {
+
+    // Appointment core
+    date: { type: Date, required: true },
+    time: { type: String, required: true },
+    status: {
       type: String,
-      required: true,
-    },
-    status: 
-    {
-      type: String,
-      enum: ["Upcoming","Completed", "Cancelled"],
+      enum: ["Upcoming", "Completed", "Cancelled"],
       default: "Upcoming",
     },
-    reason: 
-    {
-      type: String,
-      default: "",
-    }
+    reason: { type: String, default: "" },
   },
   { timestamps: true }
 );
