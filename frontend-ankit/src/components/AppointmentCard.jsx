@@ -49,7 +49,7 @@ const AppointmentCard = ({ appt }) => {
             </p>
             <p className="flex items-center gap-2">
               <FaPhone className="text-[#0A4D68]" />
-              Phone: {patient}
+              Phone: {patient.phone || "-" }
             </p>
           </div>
         </div>
