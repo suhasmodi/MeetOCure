@@ -74,13 +74,12 @@ const DoctorPatientDetailsPage = () => {
         <div className="bg-white p-6 rounded-xl shadow">
           <FaCalendarAlt className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Date</p>
-          <p className="text-lg font-semibold">{appt.date}</p>
+          <p className="text-lg font-semibold">{new Date(appt.date).toISOString().split("T")[0]}{appt.date}</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow">
           <FaClock className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Time</p>
           <p className="text-lg font-semibold">
-            {new Date(appt.date).toISOString().split("T")[0]}
             {appt.time}
           </p>
         </div>
