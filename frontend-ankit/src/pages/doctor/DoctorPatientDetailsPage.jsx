@@ -11,6 +11,7 @@ import {
   FaEllipsisV,
 } from "react-icons/fa";
 import TopIcons from "../../components/TopIcons";
+import Appointment from "../../../../server/models/Appointment";
 
 const DoctorPatientDetailsPage = () => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const DoctorPatientDetailsPage = () => {
         <div className="bg-white p-6 rounded-xl shadow">
           <FaClock className="text-[#0A4D68] text-2xl mb-2 mx-auto" />
           <p className="text-base text-gray-500">Appointment Time</p>
-          <p className="text-lg font-semibold">{patient.time}</p>
+          <p className="text-lg font-semibold">{Appointment.time}</p>
         </div>
       </div>
 
