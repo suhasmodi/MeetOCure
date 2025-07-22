@@ -16,27 +16,26 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Set up logging
+# Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class MedicalAssistant:
     def __init__(self):
         load_dotenv()
         self.TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "your_default_api_key")
 
-        # Set up embeddings
+        # Embeddings
         self.embeddings = GPT4AllEmbeddings()
 
-        # Set up vector DB
+        # Vector DB retriever
         self.chroma_db_path = "chroma_db2"
         self.retriever = Chroma(
             persist_directory=self.chroma_db_path,
             embedding_function=self.embeddings
         ).as_retriever(search_kwargs={"k": 5})
 
-        # Set up LLM
+        # LLM model via ChatTogether
         self.llm_model = ChatTogether(
             together_api_key=self.TOGETHER_API_KEY,
             model="meta-llama/Llama-3.3-70B-Instruct-Turbo"
@@ -87,9 +86,8 @@ Provide only the final answer to the question without showing your internal reas
                 "success": True,
                 "sources": [doc.page_content[:200] + "..." for doc in response.get('source_documents', [])]
             }
-
         except Exception as e:
-            logger.error(f"Error in primary processing: {str(e)}")
+            logger.error(f"Primary processing error: {str(e)}")
             try:
                 docs = self.retriever.invoke(user_input)
                 context = "\n\n".join([doc.page_content for doc in docs])
@@ -104,9 +102,8 @@ Give the answer in HTML format using <b>, <h4>, <h5>, and bullet points using '-
                     "fallback": True,
                     "sources": [doc.page_content[:200] + "..." for doc in docs]
                 }
-
             except Exception as e2:
-                logger.error(f"Fallback processing also failed: {str(e2)}")
+                logger.error(f"Fallback processing error: {str(e2)}")
                 return {
                     "answer": "I'm sorry, I encountered an error processing your request. Please try again.",
                     "success": False,
@@ -118,12 +115,13 @@ Give the answer in HTML format using <b>, <h4>, <h5>, and bullet points using '-
         return {"status": "Conversation history has been reset."}
 
 
-# ------------------- Flask Server API ------------------- #
-
+# Flask API setup
 app = Flask(__name__)
+
+# Allow CORS for your frontend URL(s)
 CORS(app, origins=[
-    "http://localhost:3000",
-    "https://meet-o-cure.vercel.app"
+    "http://localhost:3000",  # local dev
+    "https://meet-o-cure.vercel.app"  # your deployed frontend
 ], supports_credentials=True)
 
 assistant = MedicalAssistant()
@@ -139,7 +137,7 @@ def chat():
         response = assistant.process_query(user_message)
         return jsonify(response)
     except Exception as e:
-        logger.error(f"Exception in /chat: {str(e)}")
+        logger.error(f"Exception in /chat endpoint: {str(e)}")
         return jsonify({
             "answer": "Server error occurred.",
             "success": False,
@@ -149,6 +147,7 @@ def chat():
 @app.route("/reset", methods=["POST"])
 def reset():
     return jsonify(assistant.reset_conversation())
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
