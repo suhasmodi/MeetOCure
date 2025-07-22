@@ -16,7 +16,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Setup logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -25,10 +25,9 @@ class MedicalAssistant:
         load_dotenv()
         self.TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "your_default_api_key")
 
-        # Embeddings
+       
         self.embeddings = GPT4AllEmbeddings()
 
-        # Vector DB retriever
         self.chroma_db_path = "chroma_db2"
         self.retriever = Chroma(
             persist_directory=self.chroma_db_path,
@@ -115,18 +114,17 @@ Give the answer in HTML format using <b>, <h4>, <h5>, and bullet points using '-
         return {"status": "Conversation history has been reset."}
 
 
-# Flask API setup
 app = Flask(__name__)
 
-# Allow CORS for your frontend URL(s)
+
 CORS(app, origins=[
-    "http://localhost:3000",  # local dev
-    "https://meet-o-cure.vercel.app"  # your deployed frontend
+    "http://localhost:3000", 
+    "https://meet-o-cure.vercel.app"  
 ], supports_credentials=True)
 
 assistant = MedicalAssistant()
 
-@app.route("/chat", methods=["POST"])
+@app.route("/ai-chat", methods=["POST"])
 def chat():
     try:
         data = request.json
