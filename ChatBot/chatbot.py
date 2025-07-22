@@ -124,7 +124,7 @@ CORS(app, origins=[
 
 assistant = MedicalAssistant()
 
-@app.route("/ai-chat", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 def chat():
     try:
         data = request.json
