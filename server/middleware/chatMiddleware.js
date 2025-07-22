@@ -36,7 +36,7 @@ app.post("/api/chat", async (req, res) => {
   } catch (error) {
     console.error("Error forwarding to Flask backend:", error.message);
     res.status(500).json({
-      answer: "⚠️ Error contacting AI server.",
+      answer: "Error contacting AI server.",
       success: false,
     });
   }
