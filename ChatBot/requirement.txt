@@ -1,0 +1,11 @@
+langchain
+langchain-community
+langchain-core
+langchain-together
+langchain-chroma
+chromadb
+PyMuPDF
+together
+python-dotenv
+openai
+tqdm
