@@ -3,7 +3,7 @@ const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
-const PORT = 8000;
+const PORT = 10000;
 
 app.use(cors());
 app.use(express.json());
@@ -12,7 +12,7 @@ app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
-    const response = await axios.post("http://localhost:5000/chat", {
+    const response = await axios.post("https://chatbot-dy5h.onrender.com", {
       message: userMessage,
     });
 
