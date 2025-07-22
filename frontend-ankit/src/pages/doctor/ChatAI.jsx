@@ -61,7 +61,7 @@ const ChatAI = () => {
     } catch (error) {
       console.error("Chat error:", error);
       const errorReply = {
-        text: "⚠️ Error connecting to AI service.",
+        text: "Error connecting to AI service.",
         time: getCurrentTime(),
         fromUser: false,
       };
@@ -82,7 +82,7 @@ const ChatAI = () => {
       const time = getCurrentTime();
       setMessages((prev) => [
         ...prev,
-        { text: `📎 Attached: ${file.name}`, time, fromUser: true },
+        { text: `Attached: ${file.name}`, time, fromUser: true },
       ]);
     }
   };
