@@ -16,7 +16,7 @@ app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
-    const response = await axios.post("https://meetocure.onrender.com/chat", {
+    const response = await axios.post("https://meetocure.onrender.com/ai-chat", {
       message: userMessage,
     });
 
