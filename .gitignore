@@ -2,3 +2,4 @@
 /server/dist    
 /server/.env
 /server/.env.local
+ChatBot/.env
