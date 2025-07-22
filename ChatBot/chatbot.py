@@ -121,7 +121,10 @@ Give the answer in HTML format using <b>, <h4>, <h5>, and bullet points using '-
 # ------------------- Flask Server API ------------------- #
 
 app = Flask(__name__)
-CORS(app, origins=["https://meet-o-cure-3pznp8uhd-oneterabyte7s-projects.vercel.app"], supports_credentials=True)
+CORS(app, origins=[
+    "http://localhost:3000",
+    "https://meet-o-cure.vercel.app"
+], supports_credentials=True)
 
 assistant = MedicalAssistant()
 
