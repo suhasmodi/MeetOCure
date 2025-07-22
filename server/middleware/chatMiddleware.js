@@ -7,7 +7,7 @@ const PORT = 8000;
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: "https://meet-o-cure-3pznp8uhd-oneterabyte7s-projects.vercel.app",
+  origin: "https://meet-o-cure.vercel.app",
 }));
 app.use(express.json());
 
