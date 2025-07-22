@@ -20,13 +20,19 @@ const ChatAI = () => {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
+    chatRef.current?.scrollTo({
+      top: chatRef.current.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages]);
 
   const getCurrentTime = () =>
-    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!newMessage.trim()) return;
 
     const time = getCurrentTime();
@@ -34,15 +40,33 @@ const ChatAI = () => {
     setMessages((prev) => [...prev, userMessage]);
     setNewMessage("");
 
-    // Simulated AI reply
-    setTimeout(() => {
+    try {
+      const response = await fetch("https://chatbot-de6r.onrender.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: newMessage.trim() }),
+      });
+
+      const data = await response.json();
+
       const botReply = {
-        text: "I'm here to assist you!",
+        text: data.answer || "Sorry, I didn't get that.",
         time: getCurrentTime(),
         fromUser: false,
       };
+
       setMessages((prev) => [...prev, botReply]);
-    }, 1000);
+    } catch (error) {
+      console.error("Chat error:", error);
+      const errorReply = {
+        text: "⚠️ Error connecting to AI service.",
+        time: getCurrentTime(),
+        fromUser: false,
+      };
+      setMessages((prev) => [...prev, errorReply]);
+    }
   };
 
   const handleKeyDown = (e) => {

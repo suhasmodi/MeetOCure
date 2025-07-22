@@ -5,24 +5,36 @@ const cors = require("cors");
 const app = express();
 const PORT = 8000;
 
-app.use(cors());
+// Enable CORS for frontend
+app.use(cors({
+  origin: "https://meet-o-cure-3pznp8uhd-oneterabyte7s-projects.vercel.app",
+}));
 app.use(express.json());
 
+// Proxy to Python backend
 app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
-    const response = await axios.post("http://localhost:5000/chat", {
+    const response = await axios.post("https://meetocure.onrender.com/chat", {
       message: userMessage,
     });
 
-    res.json({ reply: response.data.reply });
+    res.json({
+      reply: response.data.answer,
+      success: true,
+      sources: response.data.sources || [],
+    });
+
   } catch (error) {
     console.error("Error forwarding to Python:", error.message);
-    res.status(500).json({ reply: "Server error. Try again later." });
+    res.status(500).json({
+      reply: "⚠️ Error contacting AI server.",
+      success: false,
+    });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Node server listening on http://localhost:${PORT}`);
+  console.log(`Proxy server running at http://localhost:${PORT}`);
 });
