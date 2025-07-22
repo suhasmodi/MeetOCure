@@ -9,3 +9,4 @@ together
 python-dotenv
 openai
 tqdm
+gpt4all
