@@ -10,3 +10,6 @@ python-dotenv
 openai
 tqdm
 gpt4all
+flask
+cors
+flask_cors
