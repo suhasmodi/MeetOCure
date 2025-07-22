@@ -21,7 +21,7 @@ app.post("/api/chat", async (req, res) => {
 
   try {
     // Replace this URL with your Flask backend Render URL + /chat
-    const flaskBackendUrl = "https://chatbot-de6r.onrender.com/api/chat";
+    const flaskBackendUrl = "https://chatbot-de6r.onrender.com/api/ai-chat";
 
     const response = await axios.post(flaskBackendUrl, {
       message: userMessage,
