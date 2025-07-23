@@ -143,6 +143,10 @@ def chat():
 def reset():
     return jsonify(assistant.reset_conversation())
 
+@app.route("/", methods=["GET"])
+def health():
+    return "OK", 200
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
