@@ -5,6 +5,7 @@ import axios from "axios";
 import PatientTopIcons from "../../components/PatientTopIcons";
 import HeroCarousel from "../../components/HeroBanners";
 import SidebarNavPatient from "../../components/SidebarNavPatient";
+import FloatingContactButton from "../../components/FloatingContactButton";
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
@@ -71,6 +72,8 @@ const PatientDashboard = () => {
               />
               <h1 className="text-3xl font-bold text-[#0A4D68]">Meetocure</h1>
             </div>
+
+            {/* Location */}
             <div
               className="flex items-center gap-2 text-[#0A4D68] cursor-pointer hover:underline text-sm md:text-base pl-1"
               onClick={() => navigate("/location")}

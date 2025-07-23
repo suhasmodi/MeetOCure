@@ -11,7 +11,7 @@ import QuickStatsPage from "./pages/doctor/stats/QuickStatsPage";
 import DoctorAvailability from "./pages/doctor/availability/DoctorAvailability";
 import ChangeAvailability from "./pages/doctor/availability/ChangeAvailability";
 import AddAvailability from "./pages/doctor/availability/AddAvailability";
-import ProfilePage from "./pages/doctor/profile/ProfilePage";
+import DoctorProfilePage from "./pages/doctor/profile/DoctorProfilePage";
 import EditProfile from "./pages/doctor/profile/EditProfile";
 import Notifications from "./pages/doctor/Notifications";
 import ChatAI from "./pages/doctor/ChatAI";
@@ -20,6 +20,11 @@ import HelpSupport from "./pages/doctor/profile/HelpSupport";
 import TermsConditions from "./pages/doctor/profile/TermsConditions";
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import Location from "./pages/patient/Location";
+import PatientProfilePage from "./pages/patient/profile/PatientProfilePage";
+import PatientEditProfile from "./pages/patient/profile/PatientEditProfile";
+import PatientSettings from "./pages/patient/profile/PatientSettings";
+import Help from "./pages/patient/profile/Help";
+import Terms from "./pages/patient/profile/Terms";
 
 function App() {
   return (
@@ -35,7 +40,7 @@ function App() {
       <Route path="/doctor/availability" element={<DoctorAvailability />} />
       <Route path="/doctor/availability/change" element={<ChangeAvailability />} />
       <Route path="/doctor/availability/add" element={<AddAvailability />} />
-      <Route path="/doctor/profile" element={<ProfilePage />} />
+      <Route path="/doctor/profile" element={<DoctorProfilePage />} />
       <Route path="/doctor/profile/edit" element={<EditProfile />} />
       <Route path="/doctor/notifications" element={<Notifications />} />
       <Route path="/doctor/ai-chat" element={<ChatAI />} />
@@ -43,7 +48,12 @@ function App() {
       <Route path="/doctor/help" element={<HelpSupport />} />
       <Route path="/doctor/terms" element={<TermsConditions />} />
       <Route path="/patient-dashboard" element={<PatientDashboard />} />
+      <Route path="/patient/profile" element={<PatientProfilePage />} />
+      <Route path="/patient/profile/edit" element={<PatientEditProfile />} />
       <Route path="/location" element={<Location />} />
+      <Route path="/patient/settings" element={<Settings />} />
+      <Route path="/patient/help" element={<Help />} />
+      <Route path="/patient/terms" element={<Terms />} />
     </Routes>
   );
 }
