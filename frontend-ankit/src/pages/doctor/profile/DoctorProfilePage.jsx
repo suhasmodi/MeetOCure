@@ -27,7 +27,7 @@ const options = [
   { icon: <FaSignOutAlt />, label: "Log Out", path: "logout" },
 ];
 
-const ProfilePage = () => {
+const DoctorProfilePage = () => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -172,4 +172,4 @@ useEffect(() => {
   );
 };
 
-export default ProfilePage;
+export default DoctorProfilePage;
