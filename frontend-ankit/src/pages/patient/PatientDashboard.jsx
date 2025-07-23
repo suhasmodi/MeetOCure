@@ -178,7 +178,7 @@ const DoctorCard = ({ name, specialty, location, image }) => (
   </div>
 );
 
-const HospitalCard = ({ name, location, image }) => (
+const HospitalCard = ({ name, city, image }) => (
   <div className="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
     <div className="w-full h-40 overflow-hidden rounded-lg mb-4">
       <img
@@ -188,7 +188,7 @@ const HospitalCard = ({ name, location, image }) => (
       />
     </div>
     <h3 className="text-lg font-semibold text-[#1F2A37]">{name}</h3>
-    <p className="text-sm text-gray-500">{location}</p>
+    <p className="text-sm text-gray-500">{city}</p>
   </div>
 );
 
