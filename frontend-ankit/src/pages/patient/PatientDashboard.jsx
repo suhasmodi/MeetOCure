@@ -164,6 +164,7 @@ const PatientDashboard = () => {
           </div>
         )}
       </div>
+      <FloatingContactButton />
     </div>
   );
 };
