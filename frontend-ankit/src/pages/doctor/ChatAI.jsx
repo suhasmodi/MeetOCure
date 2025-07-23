@@ -32,16 +32,17 @@ const ChatAI = () => {
       minute: "2-digit",
     });
 
-  const handleSend = async () => {
-    if (!newMessage.trim()) return;
+const handleSend = async () => {
+  if (!newMessage.trim()) return;
 
-    const time = getCurrentTime();
-    const userMessage = { text: newMessage.trim(), time, fromUser: true };
-    setMessages((prev) => [...prev, userMessage]);
-    setNewMessage("");
+  const time = getCurrentTime();
+  const userMessage = { text: newMessage.trim(), time, fromUser: true };
+  setMessages((prev) => [...prev, userMessage]);
+  setNewMessage("");
 
-    try {
-      const response = await fetch("api/chat", {
+  try {
+    // Directly call your Flask backend URL here
+    const response = await fetch("https://chatbot-de6r.onrender.com/ai-chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,26 +50,26 @@ const ChatAI = () => {
       body: JSON.stringify({ message: newMessage.trim() }),
     });
 
+    const data = await response.json();
 
-      const data = await response.json();
+    const botReply = {
+      text: data.answer || "Sorry, I didn't get that.",
+      time: getCurrentTime(),
+      fromUser: false,
+    };
 
-      const botReply = {
-        text: data.answer || "Sorry, I didn't get that.",
-        time: getCurrentTime(),
-        fromUser: false,
-      };
+    setMessages((prev) => [...prev, botReply]);
+  } catch (error) {
+    console.error("Chat error:", error);
+    const errorReply = {
+      text: "Error connecting to AI service.",
+      time: getCurrentTime(),
+      fromUser: false,
+    };
+    setMessages((prev) => [...prev, errorReply]);
+  }
+};
 
-      setMessages((prev) => [...prev, botReply]);
-    } catch (error) {
-      console.error("Chat error:", error);
-      const errorReply = {
-        text: "Error connecting to AI service.",
-        time: getCurrentTime(),
-        fromUser: false,
-      };
-      setMessages((prev) => [...prev, errorReply]);
-    }
-  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
