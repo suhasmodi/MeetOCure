@@ -35,6 +35,7 @@ const PatientDashboard = () => {
     setLoadingDoctors(true);
     axios
       .get("https://meetocure.onrender.com/api/doctor", {
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         setDoctors(Array.isArray(res.data) ? res.data : []);
