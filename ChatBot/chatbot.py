@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class MedicalAssistant:
     def __init__(self):
         load_dotenv()
-        self.TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "your_default_api_key")
+        self.TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 
        
         self.embeddings = GPT4AllEmbeddings()
