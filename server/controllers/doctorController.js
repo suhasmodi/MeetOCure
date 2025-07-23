@@ -83,7 +83,7 @@ const getFilteredDoctors = async (req, res) =>
             query.experince = { $gte: parseInt(minExperience) };
         }
 
-        const doctors = await User.find(query).select("-password");
+        const doctors = await User.find({ role: "doctor" /* plus other filters */ }).select("-password");
         res.status(200).json(doctors);
     }
 
