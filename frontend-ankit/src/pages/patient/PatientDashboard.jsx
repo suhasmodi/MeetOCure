@@ -128,7 +128,7 @@ const PatientDashboard = () => {
                 key={doc._id}
                 name={doc.name}
                 specialty={doc.specialty || "General"}
-                location={doc.city || "Unknown"}
+                location={doc.address || "Unknown"}
                 image={doc.photo || "/assets/doctor2.png"}
               />
             ))}
@@ -142,7 +142,7 @@ const PatientDashboard = () => {
               <HospitalCard
                 key={hosp._id}
                 name={hosp.name}
-                location={hosp.locationText || "Unknown"}
+                location={hosp.city || "Unknown"}
                 image={hosp.image || "/assets/doctor2.png"}
               />
             ))}
@@ -181,7 +181,7 @@ const DoctorCard = ({ name, specialty, location, image }) => (
   </div>
 );
 
-const HospitalCard = ({ name, location, image }) => (
+const HospitalCard = ({ name, address, image }) => (
   <div className="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
     <div className="w-full h-40 overflow-hidden rounded-lg mb-4">
       <img
@@ -191,7 +191,7 @@ const HospitalCard = ({ name, location, image }) => (
       />
     </div>
     <h3 className="text-lg font-semibold text-[#1F2A37]">{name}</h3>
-    <p className="text-sm text-gray-500">{location}</p>
+    <p className="text-sm text-gray-500">{address}</p>
   </div>
 );
 
