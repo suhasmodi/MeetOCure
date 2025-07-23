@@ -14,6 +14,7 @@ router.get("/profile", protect(["doctor"]), getDoctorProfile);
 
 router.put("/profile", protect("doctor"), doctorController.updateDoctorProfile);
 
-router.get("/", protect(["patient"]), getFilteredDoctors);
+router.get("/", protect(["patient", "doctor", "admin"]), getFilteredDoctors);
+
 
 module.exports = router;
