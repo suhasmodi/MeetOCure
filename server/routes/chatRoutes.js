@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { chatWithOpenAI } = require("../controllers/chatCOntroller");
+const { chatWithFlaskAI } = require("../controllers/chatController");
 
-// Removed `protect`
-router.post("/", chatWithOpenAI);
+router.post("/chat", chatWithFlaskAI);
 
 module.exports = router;

@@ -41,13 +41,14 @@ const ChatAI = () => {
     setNewMessage("");
 
     try {
-      const response = await fetch("https://meetocure.onrender.com/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: newMessage.trim() }),
-      });
+      const response = await fetch("https://meetocure.onrender.com/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: newMessage.trim() }),
+    });
+
 
       const data = await response.json();
 
