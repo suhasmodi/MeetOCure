@@ -22,15 +22,23 @@ const PatientDashboard = () => {
   }, [routerLocation]);
 
   useEffect(() => {
-    // Fetch doctors with role === "doctor"
-    axios.get("/api/users?role=doctor")
-      .then(res => setDoctors(res.data))
-      .catch(err => console.error("Failed to fetch doctors:", err));
+    // Fetch doctors
+    axios
+      .get("/api/users?role=doctor")
+      .then((res) => {
+        console.log("Fetched doctors:", res.data);
+        setDoctors(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch((err) => console.error("Failed to fetch doctors:", err));
 
     // Fetch hospitals
-    axios.get("/api/hospitals")
-      .then(res => setHospitals(res.data))
-      .catch(err => console.error("Failed to fetch hospitals:", err));
+    axios
+      .get("/api/hospitals")
+      .then((res) => {
+        console.log("Fetched hospitals:", res.data);
+        setHospitals(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch((err) => console.error("Failed to fetch hospitals:", err));
   }, []);
 
   return (
@@ -111,28 +119,30 @@ const PatientDashboard = () => {
         {/* Nearby Doctors */}
         <SectionHeader title="Nearby Doctors" seeAllLink="/patient/doctors" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {doctors.map((doc) => (
-            <DoctorCard
-              key={doc._id}
-              name={doc.name}
-              specialty={doc.specialty}
-              location={doc.city || "Unknown"}
-              image={doc.image || "/assets/doctor2.png"}
-            />
-          ))}
+          {Array.isArray(doctors) &&
+            doctors.map((doc) => (
+              <DoctorCard
+                key={doc._id}
+                name={doc.name}
+                specialty={doc.specialty || "General"}
+                location={doc.city || "Unknown"}
+                image={doc.image || "/assets/doctor2.png"}
+              />
+            ))}
         </div>
 
         {/* Nearby Hospitals */}
         <SectionHeader title="Nearby Hospitals" seeAllLink="/patient/hospitals" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {hospitals.map((hosp) => (
-            <HospitalCard
-              key={hosp._id}
-              name={hosp.name}
-              location={hosp.locationText || "Unknown"}
-              image={hosp.image || "/assets/doctor2.png"}
-            />
-          ))}
+          {Array.isArray(hospitals) &&
+            hospitals.map((hosp) => (
+              <HospitalCard
+                key={hosp._id}
+                name={hosp.name}
+                location={hosp.locationText || "Unknown"}
+                image={hosp.image || "/assets/doctor2.png"}
+              />
+            ))}
         </div>
       </div>
     </div>
@@ -185,7 +195,7 @@ const HospitalCard = ({ name, location, image }) => (
   </div>
 );
 
-// Preset Categories
+// Categories
 const categories = [
   { label: "Dentistry", icon: "dentist.png" },
   { label: "Cardiology", icon: "cardiology.png" },
