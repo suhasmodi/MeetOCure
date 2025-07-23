@@ -8,6 +8,12 @@ const hospitalSchema = new mongoose.Schema(
         required: true,
     },
 
+    city: {
+        type: String,
+        required: true,    // add required if city is mandatory, else remove this line
+        index: true,       // optional: index it for faster queries by city
+    },
+
     location: {
       type: {
         type: String,
@@ -51,6 +57,7 @@ const hospitalSchema = new mongoose.Schema(
             type: String,
         },
     ],
+
     doctors:
     [
         {
