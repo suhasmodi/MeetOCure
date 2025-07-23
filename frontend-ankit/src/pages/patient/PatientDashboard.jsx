@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate, useLocation as useRouterLocation } from "react-router-dom";
+import axios from "axios";
 import PatientTopIcons from "../../components/PatientTopIcons";
 import HeroCarousel from "../../components/HeroBanners";
 import SidebarNavPatient from "../../components/SidebarNavPatient";
@@ -10,6 +11,8 @@ const PatientDashboard = () => {
   const routerLocation = useRouterLocation();
 
   const [city, setCity] = useState("Vijayawada");
+  const [doctors, setDoctors] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
 
   useEffect(() => {
     const storedCity = localStorage.getItem("selectedCity");
@@ -17,6 +20,18 @@ const PatientDashboard = () => {
       setCity(storedCity);
     }
   }, [routerLocation]);
+
+  useEffect(() => {
+    // Fetch doctors with role === "doctor"
+    axios.get("/api/users?role=doctor")
+      .then(res => setDoctors(res.data))
+      .catch(err => console.error("Failed to fetch doctors:", err));
+
+    // Fetch hospitals
+    axios.get("/api/hospitals")
+      .then(res => setHospitals(res.data))
+      .catch(err => console.error("Failed to fetch hospitals:", err));
+  }, []);
 
   return (
     <div className="flex font-[Poppins] bg-[#F8FAFC] min-h-screen">
@@ -97,7 +112,13 @@ const PatientDashboard = () => {
         <SectionHeader title="Nearby Doctors" seeAllLink="/patient/doctors" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {doctors.map((doc) => (
-            <DoctorCard key={doc.name} {...doc} />
+            <DoctorCard
+              key={doc._id}
+              name={doc.name}
+              specialty={doc.specialty}
+              location={doc.city || "Unknown"}
+              image={doc.image || "/assets/doctor2.png"}
+            />
           ))}
         </div>
 
@@ -105,7 +126,12 @@ const PatientDashboard = () => {
         <SectionHeader title="Nearby Hospitals" seeAllLink="/patient/hospitals" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {hospitals.map((hosp) => (
-            <HospitalCard key={hosp.name} {...hosp} />
+            <HospitalCard
+              key={hosp._id}
+              name={hosp.name}
+              location={hosp.locationText || "Unknown"}
+              image={hosp.image || "/assets/doctor2.png"}
+            />
           ))}
         </div>
       </div>
@@ -113,7 +139,7 @@ const PatientDashboard = () => {
   );
 };
 
-// Section
+// Section Header
 const SectionHeader = ({ title, seeAllLink }) => (
   <div className="flex justify-between items-center mb-6">
     <h2 className="text-2xl font-semibold text-[#1F2A37]">{title}</h2>
@@ -128,7 +154,7 @@ const SectionHeader = ({ title, seeAllLink }) => (
   </div>
 );
 
-// Doctor section
+// Doctor Card
 const DoctorCard = ({ name, specialty, location, image }) => (
   <div className="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
     <div className="w-full h-44 overflow-hidden rounded-lg mb-4">
@@ -144,7 +170,7 @@ const DoctorCard = ({ name, specialty, location, image }) => (
   </div>
 );
 
-// Hospital Section
+// Hospital Card
 const HospitalCard = ({ name, location, image }) => (
   <div className="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
     <div className="w-full h-40 overflow-hidden rounded-lg mb-4">
@@ -159,7 +185,7 @@ const HospitalCard = ({ name, location, image }) => (
   </div>
 );
 
-// Preset Data
+// Preset Categories
 const categories = [
   { label: "Dentistry", icon: "dentist.png" },
   { label: "Cardiology", icon: "cardiology.png" },
@@ -169,34 +195,6 @@ const categories = [
   { label: "Gastroen", icon: "stomach.png" },
   { label: "Laboratory", icon: "lab.png" },
   { label: "Vaccination", icon: "vaccine.png" },
-];
-
-const doctors = [
-  {
-    name: "Dr. Srinivas",
-    specialty: "Dermatologist",
-    location: "Vijayawada",
-    image: "/assets/doctor2.png",
-  },
-  {
-    name: "Dr. Siva Prasad",
-    specialty: "Gastroenterologist",
-    location: "Vijayawada",
-    image: "/assets/doctor2.png",
-  },
-];
-
-const hospitals = [
-  {
-    name: "Star Hospital",
-    location: "Vijayawada",
-    image: "/assets/doctor2.png",
-  },
-  {
-    name: "Rainbow Hospital",
-    location: "Vijayawada",
-    image: "/assets/doctor2.png",
-  },
 ];
 
 export default PatientDashboard;
