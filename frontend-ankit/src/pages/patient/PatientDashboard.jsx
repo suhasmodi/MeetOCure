@@ -13,47 +13,49 @@ const PatientDashboard = () => {
   const [city, setCity] = useState("Vijayawada");
   const [doctors, setDoctors] = useState([]);
   const [hospitals, setHospitals] = useState([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [loadingHospitals, setLoadingHospitals] = useState(false);
+  const [errorDoctors, setErrorDoctors] = useState(null);
+  const [errorHospitals, setErrorHospitals] = useState(null);
 
   useEffect(() => {
     const storedCity = localStorage.getItem("selectedCity");
-    if (storedCity) {
-      setCity(storedCity);
-    }
+    if (storedCity) setCity(storedCity);
   }, [routerLocation]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Adjust key as needed
+    const token = localStorage.getItem("token"); // your auth token key
 
     if (!token) {
       console.warn("No auth token found. Cannot fetch protected routes.");
       return;
     }
 
-    // Fetch doctors (protected route)
+    setLoadingDoctors(true);
     axios
       .get("https://meetocure.onrender.com/api/doctors", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log("Fetched doctors:", res.data);
         setDoctors(Array.isArray(res.data) ? res.data : []);
+        setErrorDoctors(null);
       })
       .catch((err) => {
-        console.error("Failed to fetch doctors:", err.response?.data || err.message);
-      });
+        setErrorDoctors(err.response?.data?.message || err.message);
+      })
+      .finally(() => setLoadingDoctors(false));
 
-    // Fetch hospitals (public route)
+    setLoadingHospitals(true);
     axios
       .get("https://meetocure.onrender.com/api/hospitals")
       .then((res) => {
-        console.log("Fetched hospitals:", res.data);
         setHospitals(Array.isArray(res.data) ? res.data : []);
+        setErrorHospitals(null);
       })
       .catch((err) => {
-        console.error("Failed to fetch hospitals:", err.response?.data || err.message);
-      });
+        setErrorHospitals(err.response?.data?.message || err.message);
+      })
+      .finally(() => setLoadingHospitals(false));
   }, []);
 
   return (
@@ -118,32 +120,46 @@ const PatientDashboard = () => {
 
         {/* Doctors */}
         <SectionHeader title="Nearby Doctors" seeAllLink="/patient/doctors" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {Array.isArray(doctors) &&
-            doctors.map((doc) => (
+        {loadingDoctors ? (
+          <p>Loading doctors...</p>
+        ) : errorDoctors ? (
+          <p className="text-red-600">Error: {errorDoctors}</p>
+        ) : doctors.length === 0 ? (
+          <p>No doctors found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {doctors.map((doc) => (
               <DoctorCard
                 key={doc._id}
                 name={doc.name}
-                specialty={doc.specialty || "General"}
+                specialty={doc.specialization || "General"}
                 location={doc.address || "Unknown"}
                 image={doc.photo || "/assets/doctor2.png"}
               />
             ))}
-        </div>
+          </div>
+        )}
 
         {/* Hospitals */}
         <SectionHeader title="Nearby Hospitals" seeAllLink="/patient/hospitals" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {Array.isArray(hospitals) &&
-            hospitals.map((hosp) => (
+        {loadingHospitals ? (
+          <p>Loading hospitals...</p>
+        ) : errorHospitals ? (
+          <p className="text-red-600">Error: {errorHospitals}</p>
+        ) : hospitals.length === 0 ? (
+          <p>No hospitals found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {hospitals.map((hosp) => (
               <HospitalCard
                 key={hosp._id}
                 name={hosp.name}
-                location={hosp.city || "Unknown"}
+                address={hosp.city || "Unknown"}
                 image={hosp.image || "/assets/doctor2.png"}
               />
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
