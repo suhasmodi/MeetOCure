@@ -60,11 +60,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
-    photo: {
-      type: String,
-      required: function () { return this.isProfileComplete; },
-    },
   },
   { timestamps: true }
 );
