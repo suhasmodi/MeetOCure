@@ -18,6 +18,8 @@ import ChatAI from "./pages/doctor/ChatAI";
 import Settings from "./pages/doctor/profile/Settings";
 import HelpSupport from "./pages/doctor/profile/HelpSupport";
 import TermsConditions from "./pages/doctor/profile/TermsConditions";
+import PatientDashboard from "./pages/patient/PatientDashboard";
+import Location from "./pages/patient/Location";
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
       <Route path="/doctor/settings" element={<Settings />} />
       <Route path="/doctor/help" element={<HelpSupport />} />
       <Route path="/doctor/terms" element={<TermsConditions />} />
+      <Route path="/patient-dashboard" element={<PatientDashboard />} />
+      <Route path="/location" element={<Location />} />
     </Routes>
   );
 }
