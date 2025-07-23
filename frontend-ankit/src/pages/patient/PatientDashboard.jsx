@@ -22,31 +22,43 @@ const PatientDashboard = () => {
   }, [routerLocation]);
 
   useEffect(() => {
-    // Fetch doctors
+    const token = localStorage.getItem("token"); // Adjust key as needed
+
+    if (!token) {
+      console.warn("No auth token found. Cannot fetch protected routes.");
+      return;
+    }
+
+    // Fetch doctors (protected route)
     axios
-      .get("/api/users?role=doctor")
+      .get("https://meetocure.onrender.com/api/doctors", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         console.log("Fetched doctors:", res.data);
         setDoctors(Array.isArray(res.data) ? res.data : []);
       })
-      .catch((err) => console.error("Failed to fetch doctors:", err));
+      .catch((err) => {
+        console.error("Failed to fetch doctors:", err.response?.data || err.message);
+      });
 
-    // Fetch hospitals
+    // Fetch hospitals (public route)
     axios
-      .get("/api/hospitals")
+      .get("https://meetocure.onrender.com/api/hospitals")
       .then((res) => {
         console.log("Fetched hospitals:", res.data);
         setHospitals(Array.isArray(res.data) ? res.data : []);
       })
-      .catch((err) => console.error("Failed to fetch hospitals:", err));
+      .catch((err) => {
+        console.error("Failed to fetch hospitals:", err.response?.data || err.message);
+      });
   }, []);
 
   return (
     <div className="flex font-[Poppins] bg-[#F8FAFC] min-h-screen">
-      {/* Sidebar */}
       <SidebarNavPatient />
-
-      {/* Main Content */}
       <div className="flex-1 min-h-screen px-6 py-6 md:pb-8">
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
@@ -59,8 +71,6 @@ const PatientDashboard = () => {
               />
               <h1 className="text-3xl font-bold text-[#0A4D68]">Meetocure</h1>
             </div>
-
-            {/* Location */}
             <div
               className="flex items-center gap-2 text-[#0A4D68] cursor-pointer hover:underline text-sm md:text-base pl-1"
               onClick={() => navigate("/location")}
@@ -69,11 +79,10 @@ const PatientDashboard = () => {
               <span>{city}</span>
             </div>
           </div>
-
           <PatientTopIcons />
         </div>
 
-        {/* Search Bar */}
+        {/* Search */}
         <div className="mb-6">
           <input
             type="text"
@@ -82,22 +91,13 @@ const PatientDashboard = () => {
           />
         </div>
 
-        {/* Hero Banner */}
+        {/* Hero */}
         <div className="mb-10">
           <HeroCarousel height="h-64" />
         </div>
 
         {/* Categories */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-[#1F2A37]">Categories</h2>
-          <a
-            href="/patient/categories"
-            className="text-sm text-[#0A4D68] hover:underline font-medium"
-          >
-            See All
-          </a>
-        </div>
-
+        <SectionHeader title="Categories" seeAllLink="/patient/categories" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-8 mb-16">
           {categories.map((item) => (
             <div
@@ -116,7 +116,7 @@ const PatientDashboard = () => {
           ))}
         </div>
 
-        {/* Nearby Doctors */}
+        {/* Doctors */}
         <SectionHeader title="Nearby Doctors" seeAllLink="/patient/doctors" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {Array.isArray(doctors) &&
@@ -126,12 +126,12 @@ const PatientDashboard = () => {
                 name={doc.name}
                 specialty={doc.specialty || "General"}
                 location={doc.city || "Unknown"}
-                image={doc.image || "/assets/doctor2.png"}
+                image={doc.photo || "/assets/doctor2.png"}
               />
             ))}
         </div>
 
-        {/* Nearby Hospitals */}
+        {/* Hospitals */}
         <SectionHeader title="Nearby Hospitals" seeAllLink="/patient/hospitals" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.isArray(hospitals) &&
@@ -149,7 +149,6 @@ const PatientDashboard = () => {
   );
 };
 
-// Section Header
 const SectionHeader = ({ title, seeAllLink }) => (
   <div className="flex justify-between items-center mb-6">
     <h2 className="text-2xl font-semibold text-[#1F2A37]">{title}</h2>
@@ -164,7 +163,6 @@ const SectionHeader = ({ title, seeAllLink }) => (
   </div>
 );
 
-// Doctor Card
 const DoctorCard = ({ name, specialty, location, image }) => (
   <div className="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
     <div className="w-full h-44 overflow-hidden rounded-lg mb-4">
@@ -180,7 +178,6 @@ const DoctorCard = ({ name, specialty, location, image }) => (
   </div>
 );
 
-// Hospital Card
 const HospitalCard = ({ name, location, image }) => (
   <div className="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
     <div className="w-full h-40 overflow-hidden rounded-lg mb-4">
@@ -195,7 +192,6 @@ const HospitalCard = ({ name, location, image }) => (
   </div>
 );
 
-// Categories
 const categories = [
   { label: "Dentistry", icon: "dentist.png" },
   { label: "Cardiology", icon: "cardiology.png" },
