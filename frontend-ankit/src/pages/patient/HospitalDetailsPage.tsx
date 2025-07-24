@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Hospital, Review } from '../types';
+import { Hospital, Review } from './types';
 import Header from './Header';
 import { HeartIcon, HospitalIcon as BuildingIcon, LocationPinIcon, RouteIcon } from './Icons';
 import { FaUserFriends, FaRegCommentDots } from 'react-icons/fa';
