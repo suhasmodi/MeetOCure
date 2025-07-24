@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { RedemptionOffer } from '../types';
+import { RedemptionOffer } from './types';
 import { BsGiftFill } from 'react-icons/bs';
 import { FaStar, FaCoins } from 'react-icons/fa';
 
