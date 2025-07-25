@@ -41,7 +41,7 @@ const HospitalDetailsPage = ({ hospitalId, onBack, onToggleFavorite }) => {
     useEffect(() => {
         const fetchHospital = async () => {
             try {
-                const res = await axios.get(`https://meetocure.onrender.com/api/hospitals/${hospitalId}`);
+                const res = await axios.get(`https://meetocure.onrender.com/api/hospitals`);
                 setHospital(res.data);
             } catch (err) {
                 console.error("Error fetching hospital data:", err);
