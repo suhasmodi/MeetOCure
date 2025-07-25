@@ -8,25 +8,25 @@ const bookAppointment = async (req, res) => {
   try {
     const { doctorId, date, time, reason } = req.body;
 
-    // 1. Validate doctor slot availability in Availability collection
+    // Step 1: Find doctor's availability for that date
     const availability = await Availability.findOne({ doctor: doctorId });
     if (!availability) {
-      return res.status(400).json({ message: "Doctor availability not found" });
+      return res.status(404).json({ message: "No availability found for doctor" });
     }
 
-    // Find day entry for requested date
-    const dayEntry = availability.days.find((d) => d.date === date);
+    // Step 2: Find the day entry for the requested date
+    const dayEntry = availability.days.find(d => d.date === date);
     if (!dayEntry || !dayEntry.slots.includes(time)) {
       return res.status(400).json({ message: "Selected slot not available" });
     }
 
-    // Create new appointment
+    // Step 3: Build patient info
     const patientDoc = await User.findById(req.user.id).select("name gender dob");
     const age = Math.floor(
-      (Date.now() - new Date(patientDoc.dob).getTime()) /
-      (1000 * 60 * 60 * 24 * 365.25)
+      (Date.now() - new Date(patientDoc.dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25)
     );
 
+    // Step 4: Save appointment
     const appointment = new Appointment({
       patient: req.user.id,
       doctor: doctorId,
@@ -38,19 +38,20 @@ const bookAppointment = async (req, res) => {
         name: patientDoc.name,
         gender: patientDoc.gender,
         age,
-        note: "Short medical note here" // or leave blank
+        note: "" // optional
       }
     });
 
     await appointment.save();
 
-    // Remove booked time from availability slots array
-    dayEntry.slots = dayEntry.slots.filter((t) => t !== time);
+    // Step 5: Remove the booked time slot from availability
+    dayEntry.slots = dayEntry.slots.filter(slot => slot !== time);
     await availability.save();
 
-    res.status(201).json({ message: "Appointment booked successfully", appointment });
+    return res.status(201).json({ message: "Appointment booked successfully", appointment });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Booking failed:", err);
+    return res.status(500).json({ message: err.message || "Server error" });
   }
 };
 
