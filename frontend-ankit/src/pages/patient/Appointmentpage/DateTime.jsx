@@ -76,6 +76,7 @@ const DateTime = () => {
       const response = await axios.post(
         "https://meetocure.onrender.com/api/appointments",
         {
+          doctorId: "686777ed62ea595b0eb8bc29",
           date: selectedDate,
           time: selectedTime,
         },
