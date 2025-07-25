@@ -1,38 +1,57 @@
 const Availability = require("../models/Availability");
+const Slot = require("../models/Slot");
 
 const setAvailability = async (req, res) => {
   try {
     const doctorId = req.user.id;
-    const { days } = req.body; 
+    const { days } = req.body;
 
-    
     const today = new Date().toISOString().slice(0, 10);
     if (days.some(day => day.date < today)) {
       return res.status(400).json({ message: "Cannot add slots for past dates" });
     }
 
-  
+    // Fetch or create availability
     let availability = await Availability.findOne({ doctor: doctorId });
 
     if (!availability) {
       availability = await Availability.create({ doctor: doctorId, days });
     } else {
-      
+      // Merge or overwrite dates
       days.forEach((newDay) => {
         const existingDay = availability.days.find((d) => d.date === newDay.date);
         if (existingDay) {
-          // Overwrite slots for this date
           existingDay.slots = newDay.slots;
         } else {
-          // Add new date
           availability.days.push(newDay);
         }
       });
       await availability.save();
     }
 
-    res.status(200).json({ message: "Availability set", availability });
+    // 🧹 Clean old slots for this doctor
+    await Slot.deleteMany({ doctor: doctorId });
+
+    // 🧱 Build new slot documents
+    const slotDocs = [];
+    availability.days.forEach(day => {
+      day.slots.forEach(time => {
+        slotDocs.push({
+          doctor: doctorId,
+          date: day.date,
+          time: time
+        });
+      });
+    });
+
+    // 💾 Insert into Slot collection
+    if (slotDocs.length > 0) {
+      await Slot.insertMany(slotDocs);
+    }
+
+    res.status(200).json({ message: "Availability set and slots synced", availability });
   } catch (err) {
+    console.error("Error in setAvailability:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -56,10 +75,16 @@ const getAvailability = async (req, res) => {
 const deleteAvailabilityDate = async (req, res) => {
   const doctorId = req.user.id;
   const { date } = req.params;
+
   const availability = await Availability.findOne({ doctor: doctorId });
   if (!availability) return res.status(404).json({ message: "No availability found" });
+
   availability.days = availability.days.filter((d) => d.date !== date);
   await availability.save();
+
+  // Also delete slots for that date
+  await Slot.deleteMany({ doctor: doctorId, date });
+
   res.json({ message: "Deleted", availability });
 };
 
