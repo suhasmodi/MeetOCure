@@ -30,7 +30,8 @@ class MedicalAssistant:
        
 
         self.embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"  # Lightweight and fast
+           model = SentenceTransformer('paraphrase-MiniLM-L3-v2')  # smaller
+ # Lightweight and fast
         )
 
 
@@ -41,14 +42,14 @@ class MedicalAssistant:
         ).as_retriever(search_kwargs={"k": 5})
 
         # LLM model via ChatTogether
-        # self.llm_model = ChatTogether(
-        #     together_api_key=self.TOGETHER_API_KEY,
-        #     model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
-        # )
-        self.llm = ChatGroq(
-            groq_api_key=os.environ['GROQ_API_KEY'],
-            model_name="llama3-8b-8192"  # or "llama3-70b-8192", "mixtral-8x7b"
+        self.llm_model = ChatTogether(
+            together_api_key=self.TOGETHER_API_KEY,
+            model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
         )
+        # self.llm = ChatGroq(
+        #     groq_api_key=os.environ['GROQ_API_KEY'],
+        #     model_name="llama3-8b-8192"  # or "llama3-70b-8192", "mixtral-8x7b"
+        # )
 
         self.setup_conversation()
 
