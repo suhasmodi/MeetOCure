@@ -31,3 +31,4 @@ export const useAppointment = () => {
   }
   return context;
 };
+export default AppointmentProvider;

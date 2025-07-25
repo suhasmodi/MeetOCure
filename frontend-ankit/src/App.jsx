@@ -1,9 +1,13 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+
+// Common
 import SplashScreen from "./pages/SplashScreen";
 import ChooseRoleScreen from "./pages/ChooseRoleScreen";
 import DualLoginPage from "./pages/DualLoginPage";
 import DualRegisterPage from "./pages/DualRegisterPage";
+
+// Doctor Side
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorAppointmentsPage from "./pages/doctor/DoctorAppointmentsPage";
 import DoctorPatientDetailsPage from "./pages/doctor/DoctorPatientDetailsPage";
@@ -18,6 +22,8 @@ import ChatAI from "./pages/doctor/ChatAI";
 import Settings from "./pages/doctor/profile/Settings";
 import HelpSupport from "./pages/doctor/profile/HelpSupport";
 import TermsConditions from "./pages/doctor/profile/TermsConditions";
+
+// Patient Side
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import Location from "./pages/patient/Location";
 import PatientProfilePage from "./pages/patient/profile/PatientProfilePage";
@@ -25,14 +31,26 @@ import PatientEditProfile from "./pages/patient/profile/PatientEditProfile";
 import PatientSettings from "./pages/patient/profile/PatientSettings";
 import Help from "./pages/patient/profile/Help";
 import Terms from "./pages/patient/profile/Terms";
+import DateTime from "./pages/patient/Appointmentpage/DateTime"; 
+import PatientDetails from "./pages/patient/Appointmentpage/PatientDetails";
+import Payment from "./pages/patient/Appointmentpage/Payment";
+import AppointmentContextProvider from "./pages/patient/Appointmentpage/AppointmentContext";
+import ChatPage from "./pages/patient/contactpages/Chatpage";
+import ContactPage from "./pages/patient/contactpages/Contactpage";
+import HospitalsPage from "./pages/patient/hospitalpages/HospitalDetailsPage-hos";
+import WalletPage from "./pages/patient/walletpages/WalletPage";
+import PageNotFound from "./pages/patient/Page-NotFound";
 
 function App() {
   return (
     <Routes>
+      {/* Common Routes */}
       <Route path="/" element={<SplashScreen />} />
       <Route path="/choose-role" element={<ChooseRoleScreen />} />
       <Route path="/login" element={<DualLoginPage />} />
       <Route path="/register" element={<DualRegisterPage />} />
+
+      {/* Doctor Routes */}
       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
       <Route path="/doctor/appointments" element={<DoctorAppointmentsPage />} />
       <Route path="/doctor/patient/:id" element={<DoctorPatientDetailsPage />} />
@@ -47,13 +65,38 @@ function App() {
       <Route path="/doctor/settings" element={<Settings />} />
       <Route path="/doctor/help" element={<HelpSupport />} />
       <Route path="/doctor/terms" element={<TermsConditions />} />
+
+      {/* Patient Routes */}
       <Route path="/patient-dashboard" element={<PatientDashboard />} />
       <Route path="/patient/profile" element={<PatientProfilePage />} />
       <Route path="/patient/profile/edit" element={<PatientEditProfile />} />
-      <Route path="/location" element={<Location />} />
-      <Route path="/patient/settings" element={<Settings />} />
+      <Route path="/patient/settings" element={<PatientSettings />} />
       <Route path="/patient/help" element={<Help />} />
       <Route path="/patient/terms" element={<Terms />} />
+      <Route path="/location" element={<Location />} />
+      <Route path="/patient/chat" element={<ChatPage />} />
+      <Route path="/patient/contact" element={<ContactPage />} />
+      <Route path="/patient/hospitals" element={<HospitalsPage />} />
+      <Route path="/patient/wallet" element={<WalletPage />} />
+
+      {/* Patient Appointment Flow (Wrapped in Context) */}
+      <Route
+        path="/patient/appointments/*"
+        element={
+          <AppointmentContextProvider>
+            <Routes>
+              <Route path="" element={<DateTime />} />
+              <Route path="datetime" element={<DateTime />} />
+              <Route path="patient-detail" element={<PatientDetails />} />
+              {/* Add payment page when ready */}
+              <Route path="payment" element={<Payment />} /> 
+            </Routes>
+          </AppointmentContextProvider>
+        }
+      />
+
+      {/* 404 */}
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 }
