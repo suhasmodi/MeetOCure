@@ -10,7 +10,9 @@ from langchain.prompts import PromptTemplate
 from langchain_together import ChatTogether
 from langchain.chains import ConversationalRetrievalChain
 from langchain_chroma import Chroma
+
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_huggingface import HuggingFaceEmbeddings
 
 import logging
 import os
@@ -26,7 +28,11 @@ class MedicalAssistant:
         self.TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 
        
-        self.embeddings = GPT4AllEmbeddings()
+
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"  # Lightweight and fast
+        )
+
 
         self.chroma_db_path = "chroma_db2"
         self.retriever = Chroma(
@@ -35,9 +41,13 @@ class MedicalAssistant:
         ).as_retriever(search_kwargs={"k": 5})
 
         # LLM model via ChatTogether
-        self.llm_model = ChatTogether(
-            together_api_key=self.TOGETHER_API_KEY,
-            model="meta-llama/Llama-3.3-70B-Instruct-Turbo"
+        # self.llm_model = ChatTogether(
+        #     together_api_key=self.TOGETHER_API_KEY,
+        #     model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+        # )
+        self.llm = ChatGroq(
+            groq_api_key=os.environ['GROQ_API_KEY'],
+            model_name="llama3-8b-8192"  # or "llama3-70b-8192", "mixtral-8x7b"
         )
 
         self.setup_conversation()
@@ -117,11 +127,14 @@ Give the answer in HTML format using <b>, <h4>, <h5>, and bullet points using '-
 app = Flask(__name__)
 
 
-CORS(app, origins="*", allow_headers="*", methods=["GET", "POST", "OPTIONS"])
+CORS(app, origins=[
+    "http://localhost:3000", 
+    "https://meet-o-cure.vercel.app"  
+], supports_credentials=True)
 
 assistant = MedicalAssistant()
 
-@app.route("/ai-chat", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 def chat():
     try:
         data = request.json
@@ -143,11 +156,10 @@ def chat():
 def reset():
     return jsonify(assistant.reset_conversation())
 
-@app.route("/", methods=["GET"])
-def health():
-    return "OK", 200
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+
+
