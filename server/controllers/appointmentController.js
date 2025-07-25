@@ -1,4 +1,5 @@
 const Appointment = require("../models/Appointment");
+const Availability = require("../models/Availability");
 const User = require("../models/User");
 const Slot = require("../models/Slot");
 
