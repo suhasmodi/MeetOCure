@@ -79,6 +79,7 @@ const DateTime = () => {
           doctorId: "686777ed62ea595b0eb8bc29",
           date: selectedDate,
           time: selectedTime,
+          reason: "Routine Checkup",
         },
         {
           headers: {
