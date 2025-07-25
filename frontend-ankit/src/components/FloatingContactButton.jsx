@@ -7,7 +7,7 @@ const FloatingContactButton = () => {
 
   return (
     <div
-      onClick={() => navigate("/contact")}
+      onClick={() => navigate("/patient/contact-us")}
       title="Contact us"
       className="fixed bottom-6 right-6 z-50 w-20 h-20 bg-[#0A4D68] rounded-full flex flex-col items-center justify-center cursor-pointer shadow-xl transform transition-transform duration-300 hover:scale-110"
     >

@@ -36,10 +36,11 @@ import PatientDetails from "./pages/patient/Appointmentpage/PatientDetails";
 import Payment from "./pages/patient/Appointmentpage/Payment";
 import AppointmentContextProvider from "./pages/patient/Appointmentpage/AppointmentContext";
 import ChatPage from "./pages/patient/contactpages/Chatpage";
-import ContactPage from "./pages/patient/contactpages/Contactpage";
+import ContactUS from "./pages/patient/contactpages/ContactUs";
 import HospitalsPage from "./pages/patient/hospitalpages/HospitalDetailsPage-hos";
 import WalletPage from "./pages/patient/walletpages/WalletPage";
 import PageNotFound from "./pages/patient/Page-NotFound";
+import ContactUs from "./pages/patient/contactpages/ContactUs";
 
 function App() {
   return (
@@ -75,7 +76,7 @@ function App() {
       <Route path="/patient/terms" element={<Terms />} />
       <Route path="/location" element={<Location />} />
       <Route path="/patient/chat" element={<ChatPage />} />
-      <Route path="/patient/contact" element={<ContactPage />} />
+      <Route path="/patient/contact-us" element={<ContactUs />} />
       <Route path="/patient/hospitals" element={<HospitalsPage />} />
       <Route path="/patient/wallet" element={<WalletPage />} />
 
