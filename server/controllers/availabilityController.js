@@ -33,21 +33,27 @@ const setAvailability = async (req, res) => {
     await Slot.deleteMany({ doctor: doctorId });
 
     // 🧱 Build new slot documents
-    const slotDocs = [];
-    availability.days.forEach(day => {
-      day.slots.forEach(time => {
-        slotDocs.push({
-          doctor: doctorId,
-          date: day.date,
-          time: time
-        });
-      });
-    });
+    const slotDocsMap = new Map();
 
-    // 💾 Insert into Slot collection
-    if (slotDocs.length > 0) {
-      await Slot.insertMany(slotDocs);
-    }
+availability.days.forEach(day => {
+  if (!slotDocsMap.has(day.date)) {
+    slotDocsMap.set(day.date, {
+      doctor: doctorId,
+      date: day.date,
+      availableSlots: [...day.slots]
+    });
+  } else {
+    // If date already added, merge the slots (optional safeguard)
+    const existing = slotDocsMap.get(day.date);
+    existing.availableSlots.push(...day.slots);
+    slotDocsMap.set(day.date, existing);
+  }
+});
+
+// Convert map to array
+const slotDocs = Array.from(slotDocsMap.values());
+
+await Slot.insertMany(slotDocs);
 
     res.status(200).json({ message: "Availability set and slots synced", availability });
   } catch (err) {

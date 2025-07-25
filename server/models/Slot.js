@@ -11,7 +11,7 @@ const slotSchema = new mongoose.Schema (
 
     date:
     {
-        type: "Date",
+        type: String,
         required: true
     },
 
@@ -24,5 +24,7 @@ const slotSchema = new mongoose.Schema (
     ],
 },
 {timestamps: true});
+
+slotSchema.index({ doctor: 1, date: 1 }, { unique: true });
 
 module.exports = mongoose.model("Slot", slotSchema);
