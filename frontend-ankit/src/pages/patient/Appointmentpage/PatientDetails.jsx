@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { FaArrowLeft, FaUser, FaPhoneAlt, FaVenusMars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import TopIcons from "../../../components/PatientTopIcons";
@@ -12,6 +13,7 @@ const PatientDetails = () => {
     gender: "",
     photo: null,
   });
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,9 +28,75 @@ const PatientDetails = () => {
     setFormData((prev) => ({ ...prev, photo: e.target.files[0] }));
   };
 
-  const handleContinue = () => {
-    if (formData.name && formData.mobile && formData.age && formData.gender) {
-      navigate("/patient/appointments/payment");
+  const handleContinue = async () => {
+    if (!formData.name || !formData.mobile || !formData.age || !formData.gender) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    // Get date/time from localStorage (or however you saved it after date/time step)
+    const date = localStorage.getItem("appointmentDate");
+    const time = localStorage.getItem("appointmentTime");
+    const doctorId = "686777ed62ea595b0eb8bc29"; // or dynamic if you have it
+
+    if (!date || !time) {
+      alert("Appointment date/time missing. Please select date and time again.");
+      navigate("/patient/appointments/datetime");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // Prepare form data if you want to upload photo, otherwise just JSON payload
+      // Here I am assuming no photo upload for simplicity — you can extend this.
+
+      // Build patientInfo for backend
+      const patientInfo = {
+        name: formData.name,
+        mobile: formData.mobile,
+        age: formData.age,
+        gender: formData.gender,
+      };
+
+      // Backend expects { doctorId, date, time, reason, patientInfo }
+      const payload = {
+        doctorId,
+        date,
+        time,
+        reason: "Routine Checkup", // or add reason input if you want
+        patientInfo,
+      };
+
+      await axios.post(
+        "https://meetocure.onrender.com/api/bookAppointment",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
+
+      alert("Appointment booked successfully!");
+      setLoading(false);
+
+      // Clear localStorage or whatever you want
+      localStorage.removeItem("appointmentDate");
+      localStorage.removeItem("appointmentTime");
+
+      // Navigate to appointment details or confirmation page
+      navigate("/patient/appointments/patient-detail");
+
+    } catch (error) {
+      setLoading(false);
+      console.error("Booking failed", error);
+      alert("Failed to book appointment. Please try again.");
     }
   };
 
@@ -65,7 +133,7 @@ const PatientDetails = () => {
         </div>
       </div>
 
-      {/* Form Centered Card */}
+      {/* Form */}
       <div className="max-w-3xl mx-auto bg-gray-50 rounded-2xl p-8 shadow-md space-y-6">
         {/* Patient Name */}
         <div>
@@ -151,14 +219,14 @@ const PatientDetails = () => {
         <div className="flex justify-end pt-4">
           <button
             onClick={handleContinue}
-            disabled={!formData.name || !formData.mobile || !formData.age || !formData.gender}
+            disabled={loading || !formData.name || !formData.mobile || !formData.age || !formData.gender}
             className={`px-6 py-3 rounded-xl text-white font-semibold text-lg transition ${
-              formData.name && formData.mobile && formData.age && formData.gender
+              !loading && formData.name && formData.mobile && formData.age && formData.gender
                 ? "bg-[#0A4D68] hover:bg-[#083952]"
                 : "bg-gray-300 cursor-not-allowed"
             }`}
           >
-            Continue
+            {loading ? "Booking..." : "Book Appointment"}
           </button>
         </div>
       </div>
