@@ -25,15 +25,15 @@ import PatientEditProfile from "./pages/patient/profile/PatientEditProfile";
 import PatientSettings from "./pages/patient/profile/PatientSettings";
 import Help from "./pages/patient/profile/Help";
 import Terms from "./pages/patient/profile/Terms";
-import PaymentPage from './components/Appointmentpage/paymentPage.jsx';
-import ChatPage from './components/contactpages/chatpage.jsx';
-import DateTime from './components/Appointmentpage/date&time.jsx';
-import Patient from './components/Appointmentpage/patientdetails.jsx';
-import Contact from './components/contactpages/contactpage.jsx';
+import PaymentPage from './components/Appointmentpage/PaymentPage';
+import ChatPage from './components/contactpages/chatpage';
+import DateTime from './components/Appointmentpage/date&time';
+import Patient from './components/Appointmentpage/patientdetails';
+import Contact from './components/contactpages/contactpage';
 import './index.css'
-import WalletPage from './components/walletpages/walletpage.jsx';
-import PageNotFound from './components/Page-NotFound.jsx';
-import Carddata from './components/hospitalpages/Cards-data.jsx';
+import WalletPage from './components/walletpages/walletpage';
+import PageNotFound from './components/Page-NotFound';
+import Carddata from './components/hospitalpages/Cards-data';
 
 function App() {
   return (
