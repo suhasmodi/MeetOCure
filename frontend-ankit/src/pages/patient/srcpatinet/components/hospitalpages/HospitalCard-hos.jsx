@@ -1,13 +1,9 @@
 
 import React, { useState } from 'react';
-import { Hospital } from './types';
 import { HeartIcon, HospitalIcon, LocationPinIcon, RouteIcon, StarIcon } from './Icons';
 
-interface StarRatingProps {
-    rating: number;
-}
 
-const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
+const StarRating = ({ rating }) => {
     const totalStars = 5;
     return (
         <div className="flex items-center">
@@ -19,12 +15,9 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
 };
 
 
-interface HospitalCardProps {
-    hospital: Hospital;
-    onToggleFavorite: (id: number) => void;
-}
 
-const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onToggleFavorite }) => {
+
+const HospitalCard= ({ hospital, onToggleFavorite }) => {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     return (

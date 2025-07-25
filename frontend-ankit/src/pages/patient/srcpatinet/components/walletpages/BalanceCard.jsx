@@ -1,15 +1,13 @@
 
 import React from 'react';
 import { FaCoins } from 'react-icons/fa';
-import { User } from './types';
+// import { User } from '../types';
 
-interface BalanceCardProps {
-  user: User;
-}
 
-const BalanceCard: React.FC<BalanceCardProps> = ({ user }) => {
+
+const BalanceCard= ({ user }) => {
   return (
-    <div className="relative bg-teal-700 text-white rounded-2xl shadow-lg p-6 overflow-hidden">
+    <div className="relative bg-teal-700 text-white rounded-2xl shadow-lg p-6  overflow-hidden">
         <div className="absolute -right-12 -top-12 w-48 h-48 opacity-10">
             <img src="https://meetocure.com/assets/images/logo-transparent.png" alt="Meetocure Logo" className="w-full h-full object-contain" />
         </div>
@@ -28,9 +26,9 @@ const BalanceCard: React.FC<BalanceCardProps> = ({ user }) => {
                         <span className="text-4xl font-bold">{user.balance.toLocaleString()}</span>
                         <span className="text-xl font-semibold text-teal-200 -mb-0.5">Points</span>
                     </div>
-                    <a href="#" className="text-sm font-semibold text-white border-b border-dashed border-white/50 hover:border-white transition-colors">
+                    {/* <a href="#" className="text-sm font-semibold text-white border-b border-dashed border-white/50 hover:border-white transition-colors">
                         Points history
-                    </a>
+                    </a> */}
                 </div>
             </div>
         </div>

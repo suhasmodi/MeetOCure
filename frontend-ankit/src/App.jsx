@@ -25,6 +25,15 @@ import PatientEditProfile from "./pages/patient/profile/PatientEditProfile";
 import PatientSettings from "./pages/patient/profile/PatientSettings";
 import Help from "./pages/patient/profile/Help";
 import Terms from "./pages/patient/profile/Terms";
+import PaymentPage from './components/Appointmentpage/paymentPage.jsx';
+import ChatPage from './components/contactpages/chatpage.jsx';
+import DateTime from './components/Appointmentpage/date&time.jsx';
+import Patient from './components/Appointmentpage/patientdetails.jsx';
+import Contact from './components/contactpages/contactpage.jsx';
+import './index.css'
+import WalletPage from './components/walletpages/walletpage.jsx';
+import PageNotFound from './components/Page-NotFound.jsx';
+import Carddata from './components/hospitalpages/Cards-data.jsx';
 
 function App() {
   return (
@@ -54,6 +63,14 @@ function App() {
       <Route path="/patient/settings" element={<Settings />} />
       <Route path="/patient/help" element={<Help />} />
       <Route path="/patient/terms" element={<Terms />} />
+      <Route path="/patinet/payment" element={<PaymentPage />} />
+      <Route path="/patient/chat" element={<ChatPage />} />
+      <Route path="/patient/date-time" element={<DateTime />} />
+      <Route path="/patient/patient" element={<Patient />} />
+      <Route path="/patient/contact" element={<Contact />} />
+      <Route path="/patient/user-wallet" element={<WalletPage />} />
+      <Route path="/patient/cards-data" element={<Carddata />} />
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 }

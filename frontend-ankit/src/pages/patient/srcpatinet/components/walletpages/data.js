@@ -1,13 +1,10 @@
-
-import { Mission, RedemptionOffer, User } from './types';
-
-export const USER_DATA: User = {
+export const USER_DATA = {
   name: 'Nutan Sai Nandam',
   phone: '+91 8639068288',
   balance: 1200,
 };
 
-export const MISSIONS: Mission[] = [
+export const MISSIONS = [
   {
     id: 1,
     title: 'Complete Mission',
@@ -42,7 +39,7 @@ export const MISSIONS: Mission[] = [
   },
 ];
 
-export const REDEMPTION_OFFERS: RedemptionOffer[] = [
+export const REDEMPTION_OFFERS = [
   {
     id: 1,
     title: 'Redeem your Points',

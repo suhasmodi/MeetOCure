@@ -1,26 +1,22 @@
-
 import React from 'react';
-import { RedemptionOffer } from './types';
+// import { RedemptionOffer } from '../types';
 import { BsGiftFill } from 'react-icons/bs';
 import { FaStar, FaCoins } from 'react-icons/fa';
 
-interface RedemptionCardProps {
-  offer: RedemptionOffer;
-  onClick: () => void;
-}
 
-const RedemptionCard: React.FC<RedemptionCardProps> = ({ offer, onClick }) => {
-  const handleRedeemClick = (e: React.MouseEvent) => {
+
+const RedemptionCard = ({ offer, onClick }) => {
+  const handleRedeemClick = (e) => {
     e.stopPropagation(); // Prevent card's onClick from firing
     alert(`Redeem button for "${offer.description}" clicked!`);
   };
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 duration-300 flex-shrink-0 w-[260px] sm:w-auto flex flex-col h-full"
+      className="bg-white rounded-2xl shadow-md overflow-hidden  cursor-pointer transition-transform hover:scale-105 duration-300 flex-shrink-0 w-[260px] sm:w-auto flex flex-col h-full"
       onClick={onClick}
     >
-      <div className="bg-teal-800 text-white p-4 flex justify-between items-start rounded-t-2xl">
+      <div className="bg-teal-800 text-white p-4 flex justify-between gap-10 items-start rounded-t-2xl">
         <div>
           <h3 className="font-bold text-lg">{offer.title}</h3>
         </div>

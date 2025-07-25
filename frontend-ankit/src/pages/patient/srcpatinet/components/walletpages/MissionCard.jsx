@@ -1,18 +1,14 @@
 
 import React from 'react';
-import { Mission } from './types';
+// import { Mission } from '../types';
 import { BsGiftFill } from 'react-icons/bs';
 import { FaStar, FaCoins } from 'react-icons/fa';
 
-interface MissionCardProps {
-  mission: Mission;
-  onClick: () => void;
-}
 
-const MissionCard: React.FC<MissionCardProps> = ({ mission, onClick }) => {
+const MissionCard = ({ mission, onClick }) => {
   const progressPercentage = (mission.progressCurrent / mission.progressTotal) * 100;
 
-  const handleCompleteClick = (e: React.MouseEvent) => {
+  const handleCompleteClick = (e) => {
     e.stopPropagation(); // Prevent card's onClick from firing
     console.log(`Completing mission ${mission.id}`);
     alert(`Complete button for "${mission.description}" clicked!`);

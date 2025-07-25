@@ -1,34 +1,31 @@
 
 import React, { useState, useCallback } from 'react';
 import Header from './Header';
-import Tabs, { TabLabel } from './Tabs';
+import Tabs  from './Tabs';
 import MissionCard from './MissionCard';
 import RedemptionCard from './RedemptionCard';
 import BalanceCard from './BalanceCard';
-import { MISSIONS, REDEMPTION_OFFERS, USER_DATA } from './constants';
-import { Mission, RedemptionOffer } from './types';
+import { MISSIONS, REDEMPTION_OFFERS, USER_DATA } from './data';
+// import { Mission, RedemptionOffer } from './types';
 
 // --- Internal View Component (from WalletHomeView.tsx) ---
-interface WalletHomeViewProps {
-  onBack: () => void;
-  onSeeAllRedeem: () => void;
-  onSeeAllMissions: () => void;
-  onRedemptionClick: (id: number) => void;
-  onMissionClick: (id: number) => void;
-}
-const WalletHomeView: React.FC<WalletHomeViewProps> = ({ onBack, onSeeAllRedeem, onSeeAllMissions, onRedemptionClick, onMissionClick }) => (
-    <div className="flex flex-col">
-        <div className="bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-            <Header title="Wallet" onBackClick={onBack} showIcons={true} />
+
+const WalletHomeView= ({ onBack, onSeeAllRedeem, onSeeAllMissions, onRedemptionClick, onMissionClick }) => (
+    // <div className="flex flex-col">
+    <div>
+        <div className=" backdrop-blur-sm w-full sticky">
+            {/* <Header title="Wallet" onBackClick={onBack} showIcons={true} /> */}
+            <Header title="Wallet" onBack={onBack} />
         </div>
-        <main className="flex-grow p-4 sm:p-6 bg-gray-50 space-y-8">
+        
+        <main className="flex-grow p-4 sm:p-4 bg-gray-50 space-y-8">
             <BalanceCard user={USER_DATA} />
             <section>
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">Redeem Points</h2>
                     <button onClick={onSeeAllRedeem} className="font-semibold text-teal-600 hover:text-teal-800 transition-colors">See All</button>
                 </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide relative -mx-4 sm:-mx-6 px-4 sm:px-6 ">
                     {REDEMPTION_OFFERS.slice(0, 4).map((offer) => <RedemptionCard key={offer.id} offer={offer} onClick={() => onRedemptionClick(offer.id)} />)}
                 </div>
             </section>
@@ -46,18 +43,13 @@ const WalletHomeView: React.FC<WalletHomeViewProps> = ({ onBack, onSeeAllRedeem,
 );
 
 // --- Internal View Component (from PointsListView.tsx) ---
-interface PointsListViewProps {
-  initialTab: TabLabel;
-  onBack: () => void;
-  onRedemptionClick: (id: number) => void;
-  onMissionClick: (id: number) => void;
-}
-const PointsListView: React.FC<PointsListViewProps> = ({ initialTab, onBack, onRedemptionClick, onMissionClick }) => {
-    const [activeTab, setActiveTab] = useState<TabLabel>(initialTab);
+
+const PointsListView = ({ initialTab, onBack, onRedemptionClick, onMissionClick }) => {
+    const [activeTab, setActiveTab] = useState(initialTab);
     return (
         <div className="flex flex-col">
             <div className="bg-white sticky top-0 z-10">
-                <Header title="Wallet" onBackClick={onBack} showIcons={true} />
+                <Header title="Wallet Details" onBack={onBack} />
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
             <main className="flex-grow p-4 sm:p-6 bg-gray-50">
@@ -76,12 +68,8 @@ const PointsListView: React.FC<PointsListViewProps> = ({ initialTab, onBack, onR
 };
 
 // --- Internal View Component (from DetailView.tsx) ---
-interface DetailViewProps {
-  type: 'mission' | 'redemption';
-  itemId: number;
-  onBack: () => void;
-}
-const DetailView: React.FC<DetailViewProps> = ({ type, itemId, onBack }) => {
+
+const DetailView= ({ type, itemId, onBack }) => {
     const isMission = type === 'mission';
     const item = isMission ? MISSIONS.find(m => m.id === itemId) : REDEMPTION_OFFERS.find(r => r.id === itemId);
     const terms = [
@@ -94,19 +82,19 @@ const DetailView: React.FC<DetailViewProps> = ({ type, itemId, onBack }) => {
     ];
 
     if (!item) {
-        return (<div><Header title="Error" onBackClick={onBack} showIcons={false} /><p className="p-8 text-center">Item not found.</p></div>);
+        return (<div><Header title="Wallet Details" onBack={onBack} showIcons={false} /><p className="p-8 text-center">Item not found.</p></div>);
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col h-180">
             <div className="bg-white sticky top-0 z-10">
-                <Header title="Wallet" onBackClick={onBack} showIcons={false} />
+            <Header title="Wallet Details" onBack={onBack} showIcons={false} />
             </div>
             <main className="flex-grow p-4 sm:p-6 lg:p-8 bg-gray-50">
-                <div className="w-full max-w-4xl mx-auto">
-                    <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
+                <div className="w-full max-w-4xl2 mx-auto">
+                    <div className="lg:grid lg:grid-cols-2 lg:gap-20 lg:items-start">
                         <div className="mb-6 lg:mb-0">
-                            {isMission ? (<MissionCard mission={item as Mission} onClick={() => {}} />) : (<RedemptionCard offer={item as RedemptionOffer} onClick={() => {}} />)}
+                            {isMission ? (<MissionCard mission={item } onClick={() => {}} />) : (<RedemptionCard offer={item } onClick={() => {}} />)}
                         </div>
                         <div className="bg-white rounded-2xl shadow-md p-6">
                             <h2 className="text-xl font-bold text-gray-800 mb-4">Terms & Conditions</h2>
@@ -120,16 +108,10 @@ const DetailView: React.FC<DetailViewProps> = ({ type, itemId, onBack }) => {
 };
 
 // --- Main Page Component ---
-type View = 'home' | 'list' | 'mission_detail' | 'redeem_detail';
 
-interface AppState {
-  view: View;
-  initialListTab: TabLabel;
-  selectedItemId: number | null;
-}
 
-const WalletPage: React.FC = () => {
-    const [state, setState] = useState<AppState>({ view: 'home', initialListTab: 'Redeem Points', selectedItemId: null });
+const WalletPage= () => {
+    const [state, setState] = useState({ view: 'home', initialListTab: 'Redeem Points', selectedItemId: null });
 
     const handleBack = useCallback(() => {
         switch (state.view) {
@@ -140,15 +122,15 @@ const WalletPage: React.FC = () => {
         }
     }, [state.view]);
     
-    const handleSeeAll = (tab: TabLabel) => { setState(s => ({ ...s, view: 'list', initialListTab: tab })); };
-    const handleMissionClick = (id: number) => { setState(s => ({ ...s, view: 'mission_detail', selectedItemId: id })); };
-    const handleRedemptionClick = (id: number) => { setState(s => ({ ...s, view: 'redeem_detail', selectedItemId: id })); };
+    const handleSeeAll = (tab) => { setState(s => ({ ...s, view: 'list', initialListTab: tab })); };
+    const handleMissionClick = (id) => { setState(s => ({ ...s, view: 'mission_detail', selectedItemId: id })); };
+    const handleRedemptionClick = (id) => { setState(s => ({ ...s, view: 'redeem_detail', selectedItemId: id })); };
 
     const renderView = () => {
         switch (state.view) {
             case 'list': return <PointsListView initialTab={state.initialListTab} onBack={handleBack} onMissionClick={handleMissionClick} onRedemptionClick={handleRedemptionClick} />;
-            case 'mission_detail': return <DetailView type="mission" itemId={state.selectedItemId!} onBack={handleBack} />;
-            case 'redeem_detail': return <DetailView type="redemption" itemId={state.selectedItemId!} onBack={handleBack} />;
+            case 'mission_detail': return <DetailView type="mission" itemId={state?.selectedItemId} onBack={handleBack} />;
+            case 'redeem_detail': return <DetailView type="redemption" itemId={state?.selectedItemId} onBack={handleBack} />;
             case 'home': default: return <WalletHomeView onBack={handleBack} onSeeAllMissions={() => handleSeeAll('Earn Points')} onSeeAllRedeem={() => handleSeeAll('Redeem Points')} onMissionClick={handleMissionClick} onRedemptionClick={handleRedemptionClick} />;
         }
     };
