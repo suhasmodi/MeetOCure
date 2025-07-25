@@ -7,9 +7,15 @@ const bookAppointment = async (req, res) => {
   try {
     const { doctorId, date, time, reason } = req.body;
 
-    // 1. Validate doctor slot availability
-    const slot = await Slot.findOne({ doctor: doctorId, date });
-    if (!slot || !slot.availableSlots.includes(time)) {
+    // 1. Validate doctor slot availability in Availability collection
+    const availability = await Availability.findOne({ doctor: doctorId });
+    if (!availability) {
+      return res.status(400).json({ message: "Doctor availability not found" });
+    }
+
+    // Find day entry for requested date
+    const dayEntry = availability.days.find((d) => d.date === date);
+    if (!dayEntry || !dayEntry.slots.includes(time)) {
       return res.status(400).json({ message: "Selected slot not available" });
     }
 
@@ -37,9 +43,9 @@ const bookAppointment = async (req, res) => {
 
     await appointment.save();
 
-    // Remove booked time from availableSlots
-    slot.availableSlots = slot.availableSlots.filter((t) => t !== time);
-    await slot.save();
+    // Remove booked time from availability slots array
+    dayEntry.slots = dayEntry.slots.filter((t) => t !== time);
+    await availability.save();
 
     res.status(201).json({ message: "Appointment booked successfully", appointment });
   } catch (err) {
