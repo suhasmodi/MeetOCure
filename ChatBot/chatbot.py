@@ -13,6 +13,8 @@ from langchain_chroma import Chroma
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_huggingface import HuggingFaceEmbeddings
+from sentence_transformers import SentenceTransformer
+
 
 import logging
 import os
@@ -30,7 +32,7 @@ class MedicalAssistant:
        
 
         self.embeddings = HuggingFaceEmbeddings(
-           model = SentenceTransformer('paraphrase-MiniLM-L3-v2')  # smaller
+           model = 'sentence-transformers/paraphrase-MiniLM-L3-v2'  # smaller
  # Lightweight and fast
         )
 
