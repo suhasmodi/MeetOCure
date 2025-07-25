@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import TopIcons from "../../../components/PatientTopIcons";
@@ -68,11 +69,31 @@ const DateTime = () => {
     setSelectedDate(formatted);
   };
 
-  const handleContinue = () => {
-    if (selectedDate && selectedTime) {
+  const handleContinue = async () => {
+  if (selectedDate && selectedTime) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "https://meetocure.onrender.com/api/bookings",
+        {
+          date: selectedDate,
+          time: selectedTime,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Booking saved:", response.data);
       navigate("/patient/appointments/patient-detail");
+    } catch (error) {
+      console.error("Error saving booking:", error);
+      alert("Failed to save booking. Please try again.");
     }
-  };
+  }
+};
 
   return (
     <div className="min-h-screen bg-white px-4 py-6 lg:px-32 lg:py-10">
