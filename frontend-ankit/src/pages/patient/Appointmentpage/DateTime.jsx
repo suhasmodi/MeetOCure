@@ -74,7 +74,7 @@ const DateTime = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://meetocure.onrender.com/api/bookings",
+        "https://meetocure.onrender.com/api/appoinments",
         {
           date: selectedDate,
           time: selectedTime,
