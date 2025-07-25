@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Headerhos from './Header-hos';
 import { HeartIcon, HospitalIcon as BuildingIcon, LocationPinIcon, RouteIcon } from './Icons';
-import { FaUserFriends, FaRegCommentDots } from 'react-icons/fa';
-import { BsAwardFill, BsStarFill } from 'react-icons/bs';
+import { FaRegCommentDots } from 'react-icons/fa';
+import { BsStarFill } from 'react-icons/bs';
 
 const StatItem = ({ icon, value, label }) => (
     <div className="flex flex-col items-center justify-center space-y-2">
@@ -22,19 +22,6 @@ const DetailSection = ({ title, children }) => (
     </div>
 );
 
-const ReviewCardSkeleton = () => (
-    <div className="bg-white rounded-2xl shadow-md p-4 animate-pulse">
-        <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-            <div className="flex-1 space-y-3">
-                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-                <div className="h-3 bg-gray-200 rounded w-full"></div>
-                <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-            </div>
-        </div>
-    </div>
-);
-
 const ReviewCard = ({ review }) => (
     <div className="bg-white rounded-2xl shadow-md p-4">
         <div className="flex items-start space-x-4">
@@ -49,51 +36,24 @@ const ReviewCard = ({ review }) => (
 
 const HospitalDetailsPage = ({ hospitalId, onBack, onToggleFavorite }) => {
     const [hospital, setHospital] = useState(null);
-    const [description, setDescription] = useState('');
-    const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchHospital = async () => {
             try {
-                const res = await axios.get(`https://meetocure.onrender.com/api/hospitals`);
+                const res = await axios.get(`https://meetocure.onrender.com/api/hospitals/${hospitalId}`);
                 setHospital(res.data);
             } catch (err) {
                 console.error("Error fetching hospital data:", err);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchHospital();
     }, [hospitalId]);
 
-    useEffect(() => {
-        const generateContent = async () => {
-            if (!hospital) return;
-            setIsLoading(true);
-
-            const setFallbackContent = () => {
-                setDescription("This hospital is dedicated to providing top-quality medical services and compassionate care to the community, utilizing modern technology and a patient-first approach.");
-                setReviews([
-                    { name: 'John Doe', avatarUrl: 'https://i.pravatar.cc/150?img=10', reviewText: 'Great facilities and compassionate staff!' },
-                    { name: 'Jane Smith', avatarUrl: 'https://i.pravatar.cc/150?img=11', reviewText: 'Clean, fast service, and professional care.' }
-                ]);
-            };
-
-            try {
-                // Use real AI content if needed here.
-                setFallbackContent();
-            } catch (err) {
-                console.error("Error generating content:", err);
-                setFallbackContent();
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        generateContent();
-    }, [hospital]);
-
-    if (!hospital) {
+    if (isLoading || !hospital) {
         return <div className="p-8 text-center text-gray-600">Loading hospital data...</div>;
     }
 
@@ -144,22 +104,15 @@ const HospitalDetailsPage = ({ hospitalId, onBack, onToggleFavorite }) => {
 
                 {hospital.contact && (
                     <DetailSection title="Contact Details">
-                        <p>Hospital Contact: {hospital.contact}</p>
+                        <p>{hospital.contact}</p>
                     </DetailSection>
                 )}
 
-                <DetailSection title="About Hospital">
-                    {isLoading ? (
-                        <div className="space-y-2 animate-pulse">
-                            <div className="h-4 bg-gray-200 rounded w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                            <div className="h-4 bg-gray-200 rounded w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                        </div>
-                    ) : (
-                        <p>{description}</p>
-                    )}
-                </DetailSection>
+                {hospital.description && (
+                    <DetailSection title="About Hospital">
+                        <p>{hospital.description}</p>
+                    </DetailSection>
+                )}
 
                 {hospital.workingHours && (
                     <DetailSection title="Working Time">
@@ -167,18 +120,14 @@ const HospitalDetailsPage = ({ hospitalId, onBack, onToggleFavorite }) => {
                     </DetailSection>
                 )}
 
-                <div>
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold text-gray-800">Reviews</h2>
+                {hospital.reviews && hospital.reviews.length > 0 && (
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800 mb-4">Reviews</h2>
+                        <div className="space-y-4">
+                            {hospital.reviews.map((review, index) => <ReviewCard key={index} review={review} />)}
+                        </div>
                     </div>
-                    <div className="space-y-4">
-                        {isLoading ? (
-                            Array.from({ length: 3 }).map((_, i) => <ReviewCardSkeleton key={i} />)
-                        ) : (
-                            reviews.map((review, index) => <ReviewCard key={index} review={review} />)
-                        )}
-                    </div>
-                </div>
+                )}
             </main>
 
             <footer className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-gray-200 z-10">
