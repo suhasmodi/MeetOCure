@@ -3,9 +3,27 @@ const User = require("../models/User");
 const Slot = require("../models/Slot");
 
 //Book an appointment 
+const mongoose = require("mongoose");
+
 const bookAppointment = async (req, res) => {
   try {
     const { doctorId, date, time, reason } = req.body;
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Unauthorized: User info missing" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return res.status(400).json({ message: "Invalid doctorId" });
+    }
+
+    if (!date || isNaN(new Date(date).getTime())) {
+      return res.status(400).json({ message: "Invalid date" });
+    }
+
+    if (!time || typeof time !== "string") {
+      return res.status(400).json({ message: "Invalid time" });
+    }
 
     // 1. Validate doctor slot availability
     const slot = await Slot.findOne({ doctor: doctorId, date });
@@ -13,13 +31,18 @@ const bookAppointment = async (req, res) => {
       return res.status(400).json({ message: "Selected slot not available" });
     }
 
-    // Create new appointment
+    // 2. Get patient info
     const patientDoc = await User.findById(req.user.id).select("name gender dob");
+    if (!patientDoc) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const age = Math.floor(
       (Date.now() - new Date(patientDoc.dob).getTime()) /
       (1000 * 60 * 60 * 24 * 365.25)
     );
 
+    // 3. Create new appointment
     const appointment = new Appointment({
       patient: req.user.id,
       doctor: doctorId,
@@ -31,21 +54,23 @@ const bookAppointment = async (req, res) => {
         name: patientDoc.name,
         gender: patientDoc.gender,
         age,
-        note: "Short medical note here" // or leave blank
+        note: "Short medical note here"
       }
     });
 
     await appointment.save();
 
-    // Remove booked time from availableSlots
+    // 4. Remove booked time from availableSlots
     slot.availableSlots = slot.availableSlots.filter((t) => t !== time);
     await slot.save();
 
-    res.status(201).json({ message: "Appointment booked successfully", appointment });
+    return res.status(201).json({ message: "Appointment booked successfully", appointment });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("bookAppointment Error:", err);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 // Doctor views all appointment requests
 const getDoctorAppointments = async (req, res) => {
