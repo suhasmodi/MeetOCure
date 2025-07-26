@@ -1,7 +1,7 @@
 # from flask import Flask, request, jsonify
 # from flask_cors import CORS
 
-# from langchain_community.document_loaders import PyMuPDFLoader
+# # from langchain_community.document_loaders import PyMuPDFLoader
 # from langchain.text_splitter import RecursiveCharacterTextSplitter
 # from langchain_community.embeddings import GPT4AllEmbeddings
 # from langchain_community.chat_message_histories import ChatMessageHistory
@@ -333,9 +333,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from langchain_community.document_loaders import PyMuPDFLoader
+# from langchain_community.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import GPT4AllEmbeddings
+# from langchain_community.embeddings import GPT4AllEmbeddings
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
