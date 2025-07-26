@@ -1,5 +1,5 @@
+// ⬅️ UNCHANGED imports and setup
 import React, { useState } from "react";
-import axios from "axios";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import TopIcons from "../../../components/PatientTopIcons";
@@ -31,17 +31,12 @@ const DateTime = () => {
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const startDay = firstDay.getDay();
     const daysInMonth = lastDay.getDate();
-
     const calendar = [];
 
-    for (let i = 0; i < startDay; i++) {
-      calendar.push(null);
-    }
-
+    for (let i = 0; i < startDay; i++) calendar.push(null);
     for (let d = 1; d <= daysInMonth; d++) {
       calendar.push(new Date(currentYear, currentMonth, d));
     }
-
     return calendar;
   };
 
@@ -69,33 +64,13 @@ const DateTime = () => {
     setSelectedDate(formatted);
   };
 
-  const handleContinue = async () => {
-  if (selectedDate && selectedTime) {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "https://meetocure.onrender.com/api/appointment",
-        {
-          doctorId: "686777ed62ea595b0eb8bc29",
-          date: selectedDate,
-          time: selectedTime,
-          reason: "Routine Checkup",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Booking saved:", response.data);
+  const handleContinue = () => {
+    if (selectedDate && selectedTime) {
+      localStorage.setItem("appointmentDate", selectedDate);
+      localStorage.setItem("appointmentTime", selectedTime);
       navigate("/patient/appointments/patient-detail");
-    } catch (error) {
-      console.error("Error saving booking:", error);
-      alert("Failed to save booking. Please try again.");
     }
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-white px-4 py-6 lg:px-32 lg:py-10">
