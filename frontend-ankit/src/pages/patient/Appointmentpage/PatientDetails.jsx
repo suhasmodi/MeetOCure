@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaArrowLeft, FaUser, FaPhoneAlt, FaVenusMars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -15,9 +15,22 @@ const PatientDetails = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const date = localStorage.getItem("appointmentDate");
+    const time = localStorage.getItem("appointmentTime");
+
+    if (!date || !time) {
+      alert("Please select appointment date and time first.");
+      navigate("/patient/appointments/datetime");
+    }
+  }, [navigate]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "age" ? (value === "" ? "" : Number(value)) : value,
+    }));
   };
 
   const handleGenderSelect = (gender) => {
@@ -28,16 +41,32 @@ const PatientDetails = () => {
     setFormData((prev) => ({ ...prev, photo: e.target.files[0] }));
   };
 
+  const validateMobile = (mobile) => {
+    // Basic validation: 10 digit number
+    return /^\d{10}$/.test(mobile);
+  };
+
   const handleContinue = async () => {
-    if (!formData.name || !formData.mobile || !formData.age || !formData.gender) {
+    const { name, mobile, age, gender } = formData;
+
+    if (!name || !mobile || !age || !gender) {
       alert("Please fill all required fields");
       return;
     }
 
-    // Get date/time from localStorage (or however you saved it after date/time step)
+    if (!validateMobile(mobile)) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    if (age <= 0 || age > 120) {
+      alert("Please enter a valid age.");
+      return;
+    }
+
     const date = localStorage.getItem("appointmentDate");
     const time = localStorage.getItem("appointmentTime");
-    const doctorId = "686777ed62ea595b0eb8bc29"; // or dynamic if you have it
+    const doctorId = "686777ed62ea595b0eb8bc29"; // or dynamic
 
     if (!date || !time) {
       alert("Appointment date/time missing. Please select date and time again.");
@@ -50,23 +79,18 @@ const PatientDetails = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // Prepare form data if you want to upload photo, otherwise just JSON payload
-      // Here I am assuming no photo upload for simplicity — you can extend this.
-
-      // Build patientInfo for backend
       const patientInfo = {
-        name: formData.name,
-        mobile: formData.mobile,
-        age: formData.age,
-        gender: formData.gender,
+        name,
+        mobile,
+        age,
+        gender,
       };
 
-      // Backend expects { doctorId, date, time, reason, patientInfo }
       const payload = {
         doctorId,
         date,
         time,
-        reason: "Routine Checkup", // or add reason input if you want
+        reason: "Routine Checkup",
         patientInfo,
       };
 
@@ -81,18 +105,11 @@ const PatientDetails = () => {
         }
       );
 
-
-
       alert("Appointment booked successfully!");
-      setLoading(false);
-
-      // Clear localStorage or whatever you want
       localStorage.removeItem("appointmentDate");
       localStorage.removeItem("appointmentTime");
-
-      // Navigate to appointment details or confirmation page
+      setLoading(false);
       navigate("/patient/appointments/patient-detail");
-
     } catch (error) {
       setLoading(false);
       console.error("Booking failed", error);
@@ -219,9 +236,19 @@ const PatientDetails = () => {
         <div className="flex justify-end pt-4">
           <button
             onClick={handleContinue}
-            disabled={loading || !formData.name || !formData.mobile || !formData.age || !formData.gender}
+            disabled={
+              loading ||
+              !formData.name ||
+              !formData.mobile ||
+              !formData.age ||
+              !formData.gender
+            }
             className={`px-6 py-3 rounded-xl text-white font-semibold text-lg transition ${
-              !loading && formData.name && formData.mobile && formData.age && formData.gender
+              !loading &&
+              formData.name &&
+              formData.mobile &&
+              formData.age &&
+              formData.gender
                 ? "bg-[#0A4D68] hover:bg-[#083952]"
                 : "bg-gray-300 cursor-not-allowed"
             }`}
