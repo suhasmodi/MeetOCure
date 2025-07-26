@@ -2,15 +2,14 @@ gunicorn
 langchain
 langchain-community
 langchain-core
-langchain-together
 langchain-chroma
 chromadb
+langchain_google_genai
 PyMuPDF
 together
 python-dotenv
 openai
 tqdm
-gpt4all
 flask
 cors
 flask_cors
