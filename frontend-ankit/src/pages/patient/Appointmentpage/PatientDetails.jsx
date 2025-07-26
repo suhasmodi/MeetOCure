@@ -109,7 +109,7 @@ const PatientDetails = () => {
       localStorage.removeItem("appointmentDate");
       localStorage.removeItem("appointmentTime");
       setLoading(false);
-      navigate("/patient/appointments/payment");
+      navigate("/patient/appointments/patient-detail");
     } catch (error) {
       setLoading(false);
       console.error("Booking failed", error);
