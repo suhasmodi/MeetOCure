@@ -5,21 +5,42 @@ const Slot = require("../models/Slot");
 //Book an appointment 
 const bookAppointment = async (req, res) => {
   try {
-    const { doctorId, date, time, reason } = req.body;
+    const { doctorId, date, time, reason, patientInfo: incomingPatientInfo } = req.body;
 
-    // 1. Validate doctor slot availability
+    // Validate doctor slot availability
     const slot = await Slot.findOne({ doctor: doctorId, date });
     if (!slot || !slot.availableSlots.includes(time)) {
       return res.status(400).json({ message: "Selected slot not available" });
     }
 
-    // Create new appointment
-    const patientDoc = await User.findById(req.user.id).select("name gender dob");
+    // Fetch patient from DB to get DOB (to calculate age)
+    const patientDoc = await User.findById(req.user.id).select("name gender dob phone");
+    if (!patientDoc) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    // Calculate age
     const age = Math.floor(
-      (Date.now() - new Date(patientDoc.dob).getTime()) /
-      (1000 * 60 * 60 * 24 * 365.25)
+      (Date.now() - new Date(patientDoc.dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25)
     );
 
+    // Normalize gender to lowercase (to match enum)
+    const genderNormalized = patientDoc.gender.toLowerCase();
+
+    // Build patientInfo for Appointment, using incoming mobile if provided or from DB
+    const patientInfo = {
+      name: patientDoc.name,
+      gender: genderNormalized,
+      age,
+      phone: patientDoc.phone || (incomingPatientInfo && incomingPatientInfo.phone), // fallback to request data if phone missing in DB
+      note: incomingPatientInfo?.note || "", // optionally take note from request
+    };
+
+    if (!patientInfo.phone) {
+      return res.status(400).json({ message: "Patient phone number is required" });
+    }
+
+    // Create new appointment
     const appointment = new Appointment({
       patient: req.user.id,
       doctor: doctorId,
@@ -27,25 +48,23 @@ const bookAppointment = async (req, res) => {
       time,
       reason,
       status: "Upcoming",
-      patientInfo: {
-        name: patientDoc.name,
-        gender: patientDoc.gender,
-        age,
-        note: "Short medical note here" // or leave blank
-      }
+      patientInfo,
     });
 
     await appointment.save();
 
-    // Remove booked time from availableSlots
+    // Remove booked slot from availableSlots and save
     slot.availableSlots = slot.availableSlots.filter((t) => t !== time);
     await slot.save();
 
     res.status(201).json({ message: "Appointment booked successfully", appointment });
   } catch (err) {
+    console.error("bookAppointment error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
+
 
 // Doctor views all appointment requests
 const getDoctorAppointments = async (req, res) => {
