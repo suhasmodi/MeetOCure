@@ -71,7 +71,7 @@ const PatientDetails = () => {
       };
 
       await axios.post(
-        "https://meetocure.onrender.com/api/patient/appointment",
+        "https://meetocure.onrender.com/api/appointments",
         payload,
         {
           headers: {
