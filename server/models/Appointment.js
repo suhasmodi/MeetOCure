@@ -24,7 +24,7 @@ const appointmentSchema = new mongoose.Schema(
     },
 
     // Appointment core
-    date: { type: Date, required: true },
+    date: { type: String, required: true },
     time: { type: String, required: true },
     status: {
       type: String,

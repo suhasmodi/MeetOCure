@@ -11,7 +11,7 @@ const slotSchema = new mongoose.Schema (
 
     date:
     {
-        type: Date,
+        type: String,
         required: true
     },
 
