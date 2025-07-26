@@ -74,7 +74,7 @@ const DateTime = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://meetocure.onrender.com/api/patient/bookAppointment",
+        "https://meetocure.onrender.com/api/appointment",
         {
           doctorId: "686777ed62ea595b0eb8bc29",
           date: selectedDate,
