@@ -5,14 +5,11 @@ langchain-core
 langchain-chroma
 chromadb
 langchain_google_genai
-PyMuPDF
-together
 python-dotenv
-openai
 tqdm
 flask
 cors
 flask_cors
-tf-keras
 sentence-transformers
 langchain-huggingface
+
